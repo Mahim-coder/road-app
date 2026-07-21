@@ -9,6 +9,7 @@
 
   function defaultData() {
     return {
+      mode: "stops",
       currentStopId: "stop-1",
       stops: [
         {
@@ -20,6 +21,13 @@
             { id: uid(), text: "Take a group photo", done: false }
           ]
         }
+      ],
+      carActivities: [
+        { id: uid(), text: "Play I Spy", done: false },
+        { id: uid(), text: "Count red cars you pass", done: false },
+        { id: uid(), text: "Play 20 Questions", done: false },
+        { id: uid(), text: "Find letters A-Z on signs, in order", done: false },
+        { id: uid(), text: "Sing along to a road trip playlist", done: false }
       ]
     };
   }
@@ -30,6 +38,8 @@
       if (!raw) return defaultData();
       var parsed = JSON.parse(raw);
       if (!parsed.stops || !parsed.stops.length) return defaultData();
+      if (!Array.isArray(parsed.carActivities)) parsed.carActivities = defaultData().carActivities;
+      if (parsed.mode !== "stops" && parsed.mode !== "car") parsed.mode = "stops";
       return parsed;
     } catch (e) {
       return defaultData();
@@ -42,6 +52,9 @@
 
   var state = loadData();
 
+  var modeStopsBtn = document.getElementById("modeStopsBtn");
+  var modeCarBtn = document.getElementById("modeCarBtn");
+  var stopsBarEl = document.getElementById("stopsBar");
   var stopsListEl = document.getElementById("stopsList");
   var addStopBtn = document.getElementById("addStopBtn");
   var currentStopNameEl = document.getElementById("currentStopName");
@@ -58,13 +71,34 @@
     return stop || state.stops[0];
   }
 
-  function render() {
-    var currentStop = getCurrentStop();
-    state.currentStopId = currentStop.id;
+  // Returns the currently active activity list, regardless of mode.
+  function getActiveList() {
+    return state.mode === "car" ? state.carActivities : getCurrentStop().missions;
+  }
 
-    renderStopsBar(currentStop);
-    renderMissions(currentStop);
-    renderProgress(currentStop);
+  function render() {
+    var isCar = state.mode === "car";
+
+    modeStopsBtn.classList.toggle("active", !isCar);
+    modeStopsBtn.setAttribute("aria-selected", String(!isCar));
+    modeCarBtn.classList.toggle("active", isCar);
+    modeCarBtn.setAttribute("aria-selected", String(isCar));
+    stopsBarEl.hidden = isCar;
+    missionInput.placeholder = isCar
+      ? "Add a car activity, e.g. Count red cars"
+      : "Add a mission, e.g. Find a Tesla";
+
+    if (isCar) {
+      currentStopNameEl.textContent = "In the Car";
+    } else {
+      var currentStop = getCurrentStop();
+      state.currentStopId = currentStop.id;
+      currentStopNameEl.textContent = currentStop.name;
+      renderStopsBar(currentStop);
+    }
+
+    renderActivities(getActiveList());
+    renderProgress(getActiveList());
   }
 
   function renderStopsBar(currentStop) {
@@ -83,42 +117,42 @@
     });
   }
 
-  function renderMissions(stop) {
-    currentStopNameEl.textContent = stop.name;
+  function renderActivities(list) {
     missionsListEl.innerHTML = "";
 
-    if (!stop.missions.length) {
+    if (!list.length) {
       emptyStateEl.hidden = false;
       return;
     }
     emptyStateEl.hidden = true;
 
-    stop.missions.forEach(function (mission) {
+    list.forEach(function (item) {
       var li = document.createElement("li");
       li.className = "mission-item";
 
       var checkbox = document.createElement("button");
       checkbox.type = "button";
-      checkbox.className = "mission-checkbox" + (mission.done ? " checked" : "");
-      checkbox.setAttribute("aria-label", mission.done ? "Mark incomplete" : "Mark complete");
-      checkbox.textContent = mission.done ? "✓" : "";
+      checkbox.className = "mission-checkbox" + (item.done ? " checked" : "");
+      checkbox.setAttribute("aria-label", item.done ? "Mark incomplete" : "Mark complete");
+      checkbox.textContent = item.done ? "✓" : "";
       checkbox.addEventListener("click", function () {
-        mission.done = !mission.done;
+        item.done = !item.done;
         saveData();
         render();
       });
 
       var text = document.createElement("span");
-      text.className = "mission-text" + (mission.done ? " done" : "");
-      text.textContent = mission.text;
+      text.className = "mission-text" + (item.done ? " done" : "");
+      text.textContent = item.text;
 
       var del = document.createElement("button");
       del.type = "button";
       del.className = "mission-delete";
-      del.setAttribute("aria-label", "Delete mission");
+      del.setAttribute("aria-label", "Delete activity");
       del.textContent = "✕";
       del.addEventListener("click", function () {
-        stop.missions = stop.missions.filter(function (m) { return m.id !== mission.id; });
+        var index = list.indexOf(item);
+        if (index !== -1) list.splice(index, 1);
         saveData();
         render();
       });
@@ -130,9 +164,9 @@
     });
   }
 
-  function renderProgress(stop) {
-    var total = stop.missions.length;
-    var done = stop.missions.filter(function (m) { return m.done; }).length;
+  function renderProgress(list) {
+    var total = list.length;
+    var done = list.filter(function (m) { return m.done; }).length;
     var percent = total ? Math.round((done / total) * 100) : 0;
 
     progressLabelEl.textContent = done + " / " + total + " completed";
@@ -140,12 +174,25 @@
     progressBarFillEl.style.width = percent + "%";
   }
 
+  modeStopsBtn.addEventListener("click", function () {
+    state.mode = "stops";
+    saveData();
+    render();
+  });
+
+  modeCarBtn.addEventListener("click", function () {
+    state.mode = "car";
+    saveData();
+    render();
+  });
+
   addStopBtn.addEventListener("click", function () {
     var name = window.prompt("Name this stop:", "Stop " + (state.stops.length + 1));
     if (!name) return;
     var stop = { id: uid(), name: name.trim().slice(0, 40) || "Stop", missions: [] };
     state.stops.push(stop);
     state.currentStopId = stop.id;
+    state.mode = "stops";
     saveData();
     render();
   });
@@ -154,8 +201,7 @@
     e.preventDefault();
     var text = missionInput.value.trim();
     if (!text) return;
-    var stop = getCurrentStop();
-    stop.missions.push({ id: uid(), text: text, done: false });
+    getActiveList().push({ id: uid(), text: text, done: false });
     missionInput.value = "";
     saveData();
     render();
