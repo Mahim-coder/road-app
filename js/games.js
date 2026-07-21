@@ -518,6 +518,509 @@ window.RoadTripGames = (function () {
     renderRound();
   }
 
+  // =======================================================================
+  // 6. TRUTH OR DARE (family friendly)
+  // =======================================================================
+  var TRUTHS = [
+    "What's your all-time favorite food?",
+    "Who is your best friend and why?",
+    "What's the funniest thing that happened this week?",
+    "If you could have any pet, what would it be?",
+    "Where would your dream vacation be?",
+    "What superpower would you pick?",
+    "What's your favorite song right now?",
+    "What's the silliest thing you're a little scared of?",
+    "What's your favorite memory with the family?",
+    "If you were a cartoon character, who would you be?",
+    "What's a hidden talent you have?",
+    "What would you do with a million dollars?",
+    "What's the best gift you've ever gotten?",
+    "If you could be any age, what age would you be?"
+  ];
+  var DARES = [
+    "Talk in a robot voice until your next turn.",
+    "Do your best animal impression.",
+    "Sing 'Happy Birthday' in a silly voice.",
+    "Make up a 5-second dance.",
+    "Say the alphabet backwards from J.",
+    "Do your best movie-star impression.",
+    "Speak only in rhymes for one minute.",
+    "Give everyone in the car a funny nickname.",
+    "Tell a joke and make someone laugh.",
+    "Do your best evil-villain laugh.",
+    "Pretend to be a news reporter describing the trip.",
+    "Talk like a pirate until your next turn.",
+    "Hum a song and let everyone guess it.",
+    "Make the funniest face you can for 10 seconds."
+  ];
+
+  function truthOrDareGame(root, api) {
+    function renderChoose() {
+      clear(root);
+      var wrap = el("div", "game-pane game-center");
+      wrap.appendChild(el("div", "game-big-emoji", "🎭"));
+      wrap.appendChild(el("p", "game-lead", "Pick your challenge!"));
+
+      var truth = el("button", "wyr-option wyr-a", null);
+      truth.type = "button";
+      truth.appendChild(el("span", "wyr-text", "💬 Truth"));
+      var dare = el("button", "wyr-option wyr-b", null);
+      dare.type = "button";
+      dare.appendChild(el("span", "wyr-text", "🎯 Dare"));
+      truth.addEventListener("click", function () { renderPrompt("truth"); });
+      dare.addEventListener("click", function () { renderPrompt("dare"); });
+
+      wrap.appendChild(truth);
+      wrap.appendChild(el("div", "wyr-or", "OR"));
+      wrap.appendChild(dare);
+      root.appendChild(wrap);
+    }
+
+    function renderPrompt(kind) {
+      clear(root);
+      var pool = kind === "truth" ? TRUTHS : DARES;
+      var text = pool[Math.floor(Math.random() * pool.length)];
+      var wrap = el("div", "game-pane game-center");
+      wrap.appendChild(el("div", "game-big-emoji", kind === "truth" ? "💬" : "🎯"));
+      wrap.appendChild(el("h3", "game-result-title", kind === "truth" ? "Truth" : "Dare"));
+      wrap.appendChild(el("div", "prompt-card", text));
+
+      var done = el("button", "game-cta", "Done! ⭐");
+      done.type = "button";
+      done.addEventListener("click", function () {
+        api.confetti();
+        api.addStars(1);
+        renderChoose();
+      });
+      wrap.appendChild(done);
+
+      var another = el("button", "game-cta ghost", "Another " + kind + " →");
+      another.type = "button";
+      another.addEventListener("click", function () { renderPrompt(kind); });
+      wrap.appendChild(another);
+
+      var back = el("button", "game-cta ghost", "↩ Truth or Dare");
+      back.type = "button";
+      back.addEventListener("click", renderChoose);
+      wrap.appendChild(back);
+      root.appendChild(wrap);
+    }
+
+    renderChoose();
+  }
+
+  // =======================================================================
+  // 7. WHO'S MOST LIKELY TO...
+  // =======================================================================
+  var MOST_LIKELY = [
+    "become famous one day",
+    "eat the most snacks on this trip",
+    "fall asleep in the car first",
+    "forget where we parked",
+    "become a movie star",
+    "laugh at their own joke",
+    "win a dance battle",
+    "make friends with a stranger's dog",
+    "sing the loudest",
+    "get us a little bit lost",
+    "eat dessert before dinner",
+    "become a millionaire",
+    "trip over their own feet",
+    "start a food fight",
+    "know a random fun fact",
+    "cry happy tears at a movie"
+  ];
+
+  function mostLikelyGame(root, api) {
+    var deck = shuffle(MOST_LIKELY);
+    var i = 0;
+
+    function renderCard() {
+      clear(root);
+      var wrap = el("div", "game-pane game-center");
+      wrap.appendChild(el("div", "game-big-emoji", "👉"));
+      wrap.appendChild(el("p", "game-lead", "Who's most likely to…"));
+      wrap.appendChild(el("div", "prompt-card", deck[i % deck.length] + "?"));
+      wrap.appendChild(el("p", "game-lead", "On the count of 3, everyone point! 1 · 2 · 3 👉"));
+
+      var next = el("button", "game-cta", "Next one →");
+      next.type = "button";
+      next.addEventListener("click", function () {
+        api.addStars(1);
+        i += 1;
+        renderCard();
+      });
+      wrap.appendChild(next);
+      root.appendChild(wrap);
+    }
+
+    renderCard();
+  }
+
+  // =======================================================================
+  // 8. EMOJI RIDDLE (guess the movie)
+  // =======================================================================
+  var EMOJI_RIDDLES = [
+    { e: "🦁👑", a: "The Lion King" },
+    { e: "🕷️🧑", a: "Spider-Man" },
+    { e: "❄️⛄👭", a: "Frozen" },
+    { e: "🐠🔍", a: "Finding Nemo" },
+    { e: "🍫🏭", a: "Charlie & the Chocolate Factory" },
+    { e: "🦖🏞️", a: "Jurassic Park" },
+    { e: "🚗⚡🏁", a: "Cars" },
+    { e: "🐼🥋", a: "Kung Fu Panda" },
+    { e: "🦇🧑", a: "Batman" },
+    { e: "🧞‍♂️🪔", a: "Aladdin" },
+    { e: "🐷🕸️", a: "Charlotte's Web" },
+    { e: "🤖🌱", a: "WALL·E" },
+    { e: "🐟🔵🐠", a: "Finding Dory" },
+    { e: "👦🎈🏠", a: "Up" },
+    { e: "🦕👣", a: "The Good Dinosaur" },
+    { e: "🧸🤠🚀", a: "Toy Story" }
+  ];
+
+  function emojiRiddleGame(root, api) {
+    var deck = shuffle(EMOJI_RIDDLES);
+    var i = 0;
+
+    function renderCard() {
+      clear(root);
+      var item = deck[i % deck.length];
+      var wrap = el("div", "game-pane game-center");
+      wrap.appendChild(el("p", "game-lead", "Guess the movie from the emojis!"));
+      wrap.appendChild(el("div", "emoji-riddle", item.e));
+
+      var answer = el("div", "game-verdict good", "👉 " + item.a);
+      answer.hidden = true;
+      wrap.appendChild(answer);
+
+      var got = el("button", "game-cta", "We got it! ⭐");
+      got.type = "button";
+      got.addEventListener("click", function () {
+        api.confetti();
+        api.addStars(1);
+        i += 1;
+        renderCard();
+      });
+      wrap.appendChild(got);
+
+      var reveal = el("button", "game-cta ghost", "Reveal answer 👀");
+      reveal.type = "button";
+      reveal.addEventListener("click", function () {
+        answer.hidden = false;
+        reveal.hidden = true;
+      });
+      wrap.appendChild(reveal);
+
+      var next = el("button", "game-cta ghost", "Skip / Next →");
+      next.type = "button";
+      next.addEventListener("click", function () { i += 1; renderCard(); });
+      wrap.appendChild(next);
+      root.appendChild(wrap);
+    }
+
+    renderCard();
+  }
+
+  // =======================================================================
+  // 9. CHARADES
+  // =======================================================================
+  var CHARADES = {
+    Animals: ["elephant", "penguin", "kangaroo", "monkey", "snake", "frog",
+      "chicken", "horse", "crab", "shark", "rabbit", "gorilla"],
+    Movies: ["Frozen", "The Lion King", "Toy Story", "Cars", "Finding Nemo",
+      "Shrek", "Moana", "Encanto", "Minions", "Spider-Man"],
+    Actions: ["brushing teeth", "swimming", "dancing", "driving a car", "cooking",
+      "sleeping", "playing guitar", "riding a bike", "fishing", "painting", "flying a kite"]
+  };
+
+  function charadesGame(root, api) {
+    var timer = null;
+    var category = "Mixed";
+    api.onCleanup(function () { if (timer) timer.stop(); });
+
+    function pool() {
+      if (category === "Mixed") return CHARADES.Animals.concat(CHARADES.Movies, CHARADES.Actions);
+      return CHARADES[category];
+    }
+
+    function renderSetup() {
+      if (timer) timer.stop();
+      clear(root);
+      var wrap = el("div", "game-pane game-center");
+      wrap.appendChild(el("div", "game-big-emoji", "🎭"));
+      wrap.appendChild(el("p", "game-lead", "One person acts it out — no talking! Everyone else guesses."));
+      var chips = el("div", "chip-grid");
+      ["Mixed", "Animals", "Movies", "Actions"].forEach(function (cat) {
+        var c = el("button", "chip" + (category === cat ? " chip-on" : ""), cat);
+        c.type = "button";
+        c.addEventListener("click", function () { category = cat; renderSetup(); });
+        chips.appendChild(c);
+      });
+      wrap.appendChild(chips);
+      var start = el("button", "game-cta", "Start acting 🎬");
+      start.type = "button";
+      start.addEventListener("click", renderWord);
+      wrap.appendChild(start);
+      root.appendChild(wrap);
+    }
+
+    function renderWord() {
+      if (timer) timer.stop();
+      clear(root);
+      var list = pool();
+      var word = list[Math.floor(Math.random() * list.length)];
+      var wrap = el("div", "game-pane game-center");
+      wrap.appendChild(el("p", "game-lead", "Actor: act this out! (Don't say it 🤫)"));
+      wrap.appendChild(el("div", "prompt-card", word));
+      var timesUp = el("div", "game-verdict bad", "⏰ Time's up!");
+      timesUp.hidden = true;
+      timer = makeTimer(60, null, function () { timesUp.hidden = false; });
+      wrap.appendChild(timer.el);
+      wrap.appendChild(timesUp);
+
+      var got = el("button", "game-cta", "Guessed it! ⭐");
+      got.type = "button";
+      got.addEventListener("click", function () {
+        if (timer) timer.stop();
+        api.confetti(); api.addStars(2); renderWord();
+      });
+      wrap.appendChild(got);
+      var skip = el("button", "game-cta ghost", "New word 🔁");
+      skip.type = "button";
+      skip.addEventListener("click", renderWord);
+      wrap.appendChild(skip);
+      var back = el("button", "game-cta ghost", "↩ Categories");
+      back.type = "button";
+      back.addEventListener("click", renderSetup);
+      wrap.appendChild(back);
+      root.appendChild(wrap);
+    }
+
+    renderSetup();
+  }
+
+  // =======================================================================
+  // 10. I SPY
+  // =======================================================================
+  var SPY_COLORS = [
+    { n: "red", c: "#ef4444" }, { n: "blue", c: "#3b82f6" }, { n: "green", c: "#16a34a" },
+    { n: "yellow", c: "#eab308" }, { n: "white", c: "#9ca3af" }, { n: "black", c: "#374151" },
+    { n: "orange", c: "#f97316" }, { n: "silver", c: "#9ca3af" }, { n: "pink", c: "#ec4899" },
+    { n: "brown", c: "#92400e" }, { n: "purple", c: "#8b5cf6" }
+  ];
+
+  function iSpyGame(root, api) {
+    var timer = null;
+    api.onCleanup(function () { if (timer) timer.stop(); });
+
+    function renderRound() {
+      if (timer) timer.stop();
+      clear(root);
+      var col = SPY_COLORS[Math.floor(Math.random() * SPY_COLORS.length)];
+      var wrap = el("div", "game-pane game-center");
+      wrap.appendChild(el("div", "game-big-emoji", "👀"));
+      wrap.appendChild(el("p", "game-lead", "I spy with my little eye… something"));
+      var word = el("div", "sing-word", col.n.toUpperCase());
+      word.style.color = col.c;
+      wrap.appendChild(word);
+      var done = el("div", "game-verdict good", "🎉 Point it out!");
+      done.hidden = true;
+      timer = makeTimer(30, null, function () { done.hidden = false; });
+      wrap.appendChild(timer.el);
+      wrap.appendChild(done);
+
+      var found = el("button", "game-cta", "Found it! ⭐");
+      found.type = "button";
+      found.addEventListener("click", function () {
+        if (timer) timer.stop();
+        api.confetti(); api.addStars(1); renderRound();
+      });
+      wrap.appendChild(found);
+      var skip = el("button", "game-cta ghost", "New color 🔁");
+      skip.type = "button";
+      skip.addEventListener("click", renderRound);
+      wrap.appendChild(skip);
+      root.appendChild(wrap);
+    }
+
+    renderRound();
+  }
+
+  // =======================================================================
+  // 11. ROCK PAPER SCISSORS
+  // =======================================================================
+  var RPS = [{ n: "Rock", e: "✊" }, { n: "Paper", e: "✋" }, { n: "Scissors", e: "✌️" }];
+
+  function rpsGame(root, api) {
+    var timeoutId = null;
+    api.onCleanup(function () { if (timeoutId) clearTimeout(timeoutId); });
+
+    function renderStart() {
+      clear(root);
+      var wrap = el("div", "game-pane game-center");
+      wrap.appendChild(el("div", "game-big-emoji", "✊✋✌️"));
+      wrap.appendChild(el("p", "game-lead", 'Everyone shoots against the app on "Shoot!"'));
+      var go = el("button", "game-cta", "Start round 🥊");
+      go.type = "button";
+      go.addEventListener("click", countdown);
+      wrap.appendChild(go);
+      root.appendChild(wrap);
+    }
+
+    function countdown() {
+      clear(root);
+      var wrap = el("div", "game-pane game-center");
+      var big = el("div", "rps-count", "3");
+      wrap.appendChild(big);
+      root.appendChild(wrap);
+      var seq = ["3", "2", "1", "Shoot!"];
+      var i = 0;
+      function step() {
+        i += 1;
+        if (i < seq.length) { big.textContent = seq[i]; timeoutId = setTimeout(step, 750); }
+        else reveal();
+      }
+      timeoutId = setTimeout(step, 750);
+    }
+
+    function reveal() {
+      clear(root);
+      var t = RPS[Math.floor(Math.random() * 3)];
+      var wrap = el("div", "game-pane game-center");
+      wrap.appendChild(el("p", "game-lead", "The app throws…"));
+      wrap.appendChild(el("div", "rps-throw", t.e));
+      wrap.appendChild(el("h3", "game-result-title", t.n + "!"));
+      wrap.appendChild(el("p", "game-lead", "Did you beat it? 🏆"));
+      var again = el("button", "game-cta", "Play again 🔁");
+      again.type = "button";
+      again.addEventListener("click", function () { api.addStars(1); countdown(); });
+      wrap.appendChild(again);
+      root.appendChild(wrap);
+    }
+
+    renderStart();
+  }
+
+  // =======================================================================
+  // 12. ALPHABET ROAD HUNT
+  // =======================================================================
+  function alphabetGame(root, api) {
+    var got = {};
+    var awarded = false;
+    var countEl = null;
+
+    function foundCount() {
+      return "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").filter(function (L) { return got[L]; }).length;
+    }
+
+    function refresh() {
+      var n = foundCount();
+      if (countEl) countEl.textContent = n + " / 26 found";
+      if (n === 26 && !awarded) { awarded = true; api.confetti(); api.addStars(5); }
+      if (n < 26) awarded = false;
+    }
+
+    function render() {
+      clear(root);
+      var wrap = el("div", "game-pane");
+      wrap.appendChild(el("p", "game-lead", "Spot a word starting with each letter (signs, plates, shops). Tap it when you find one!"));
+      var grid = el("div", "alpha-grid");
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(function (L) {
+        var cell = el("button", "alpha-cell" + (got[L] ? " got" : ""), L);
+        cell.type = "button";
+        cell.addEventListener("click", function () {
+          got[L] = !got[L];
+          cell.classList.toggle("got");
+          refresh();
+        });
+        grid.appendChild(cell);
+      });
+      wrap.appendChild(grid);
+      countEl = el("p", "game-lead", foundCount() + " / 26 found");
+      wrap.appendChild(countEl);
+      var reset = el("button", "game-cta ghost", "Reset 🔁");
+      reset.type = "button";
+      reset.addEventListener("click", function () { got = {}; awarded = false; render(); });
+      wrap.appendChild(reset);
+      root.appendChild(wrap);
+    }
+
+    render();
+  }
+
+  // =======================================================================
+  // 13. RIDDLE ME THIS
+  // =======================================================================
+  var RIDDLES = [
+    { q: "What has hands but can't clap?", a: "A clock" },
+    { q: "What has to be broken before you can use it?", a: "An egg" },
+    { q: "What goes up but never comes down?", a: "Your age" },
+    { q: "What has a neck but no head?", a: "A bottle" },
+    { q: "What gets wetter the more it dries?", a: "A towel" },
+    { q: "What has one eye but cannot see?", a: "A needle" },
+    { q: "What has teeth but cannot bite?", a: "A comb" },
+    { q: "What can you catch but never throw?", a: "A cold" },
+    { q: "What has legs but doesn't walk?", a: "A table" },
+    { q: "What has words but never speaks?", a: "A book" },
+    { q: "What is full of holes but still holds water?", a: "A sponge" },
+    { q: "What building has the most stories?", a: "A library" }
+  ];
+
+  function riddleGame(root, api) {
+    var deck = shuffle(RIDDLES);
+    var i = 0;
+    function render() {
+      clear(root);
+      var item = deck[i % deck.length];
+      var wrap = el("div", "game-pane game-center");
+      wrap.appendChild(el("div", "game-big-emoji", "🧩"));
+      wrap.appendChild(el("div", "prompt-card", item.q));
+      var answer = el("div", "game-verdict good", "💡 " + item.a);
+      answer.hidden = true;
+      wrap.appendChild(answer);
+      var got = el("button", "game-cta", "We solved it! ⭐");
+      got.type = "button";
+      got.addEventListener("click", function () { api.confetti(); api.addStars(1); i += 1; render(); });
+      wrap.appendChild(got);
+      var reveal = el("button", "game-cta ghost", "Reveal answer 👀");
+      reveal.type = "button";
+      reveal.addEventListener("click", function () { answer.hidden = false; reveal.hidden = true; });
+      wrap.appendChild(reveal);
+      var next = el("button", "game-cta ghost", "Skip / Next →");
+      next.type = "button";
+      next.addEventListener("click", function () { i += 1; render(); });
+      wrap.appendChild(next);
+      root.appendChild(wrap);
+    }
+    render();
+  }
+
+  // =======================================================================
+  // 14. SIMON SAYS
+  // =======================================================================
+  var SIMON = ["touch your nose", "raise both hands", "pat your head", "wiggle your fingers",
+    "clap twice", "make a fish face", "stick out your tongue", "blink really fast",
+    "shrug your shoulders", "wave hello", "touch your ears", "give a thumbs up", "spin your finger"];
+
+  function simonGame(root, api) {
+    function render() {
+      clear(root);
+      var cmd = SIMON[Math.floor(Math.random() * SIMON.length)];
+      var says = Math.random() < 0.6;
+      var wrap = el("div", "game-pane game-center");
+      wrap.appendChild(el("div", "game-big-emoji", "🫡"));
+      wrap.appendChild(el("p", "game-lead", "Only do it if Simon says!"));
+      wrap.appendChild(el("div", "prompt-card", (says ? "Simon says: " : "") + cmd));
+      var next = el("button", "game-cta", "Next command →");
+      next.type = "button";
+      next.addEventListener("click", function () { api.addStars(1); render(); });
+      wrap.appendChild(next);
+      root.appendChild(wrap);
+    }
+    render();
+  }
+
   // ---- registry ----------------------------------------------------------
   var GAMES = [
     { id: "carBrands", title: "Car Brand Hunt", emoji: "🚗", accent: "teal",
@@ -529,7 +1032,25 @@ window.RoadTripGames = (function () {
     { id: "wyr", title: "Would You Rather", emoji: "🤔", accent: "pink",
       tagline: "Silly choices to argue about", render: wouldYouRatherGame },
     { id: "sing", title: "Sing-Along Challenge", emoji: "🎤", accent: "blue",
-      tagline: "Belt out a song with the secret word", render: singGame }
+      tagline: "Belt out a song with the secret word", render: singGame },
+    { id: "truthDare", title: "Truth or Dare", emoji: "🎭", accent: "red",
+      tagline: "Family-friendly truths & silly dares", render: truthOrDareGame },
+    { id: "mostLikely", title: "Who's Most Likely To…", emoji: "👉", accent: "green",
+      tagline: "Point at whoever fits — 1, 2, 3!", render: mostLikelyGame },
+    { id: "emoji", title: "Emoji Movie Riddle", emoji: "🎬", accent: "indigo",
+      tagline: "Guess the movie from the emojis", render: emojiRiddleGame },
+    { id: "charades", title: "Charades", emoji: "🎭", accent: "purple",
+      tagline: "Act it out — no talking allowed!", render: charadesGame },
+    { id: "iSpy", title: "I Spy", emoji: "👀", accent: "blue",
+      tagline: "Spot the secret color before time's up", render: iSpyGame },
+    { id: "rps", title: "Rock Paper Scissors", emoji: "✊", accent: "orange",
+      tagline: "3… 2… 1… shoot against the app!", render: rpsGame },
+    { id: "alphabet", title: "Alphabet Road Hunt", emoji: "🔡", accent: "teal",
+      tagline: "Find A to Z on signs along the way", render: alphabetGame },
+    { id: "riddles", title: "Riddle Me This", emoji: "🧩", accent: "pink",
+      tagline: "Family riddles with a big reveal", render: riddleGame },
+    { id: "simon", title: "Simon Says", emoji: "🫡", accent: "green",
+      tagline: "Do it only if Simon says!", render: simonGame }
   ];
 
   var byId = {};
