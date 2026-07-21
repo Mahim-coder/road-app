@@ -141,6 +141,24 @@ main { max-width: 620px; margin: 0 auto; padding: 18px 16px calc(28px + var(--sa
 /* ---------------- Games grid ---------------- */
 .games-grid { display: flex; flex-direction: column; gap: 12px; }
 
+.group-header {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 800;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 14px 2px 2px;
+}
+.group-header:first-child { margin-top: 0; }
+.group-count {
+  font-size: 11px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
 .game-card {
   display: flex;
   align-items: center;
@@ -533,6 +551,32 @@ main { max-width: 620px; margin: 0 auto; padding: 18px 16px calc(28px + var(--sa
 /* Rock paper scissors */
 .rps-throw { font-size: 76px; line-height: 1; }
 .rps-count { font-size: 76px; font-weight: 900; color: var(--accent); line-height: 1; }
+
+/* License plate bingo */
+.bingo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; }
+.bingo-cell {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 12px 6px;
+  cursor: pointer;
+  color: var(--ink);
+}
+.bingo-cell .bingo-emoji { font-size: 26px; }
+.bingo-cell .bingo-label { font-size: 11px; font-weight: 700; text-align: center; }
+.bingo-cell.got {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff; border-color: transparent;
+}
+
+/* Spin / dice / coin */
+.spin-wheel { font-size: 80px; line-height: 1; }
+.spin-wheel.spinning { animation: spin 0.5s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.dice-row { display: flex; gap: 16px; }
+.dice { font-size: 74px; line-height: 1; }
+.coin { font-size: 80px; line-height: 1; }
 
 /* Confetti */
 .confetti-layer { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 70; }

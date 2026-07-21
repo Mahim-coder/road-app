@@ -170,38 +170,58 @@
     bump(overlayStarsPill);
   }
 
-  // ---- driving: game menu ------------------------------------------------
+  // ---- driving: game menu (grouped into sections) ------------------------
+  function makeGameCard(g) {
+    var card = document.createElement("button");
+    card.type = "button";
+    card.className = "game-card accent-" + g.accent;
+
+    var badge = document.createElement("span");
+    badge.className = "game-badge";
+    badge.textContent = g.emoji;
+
+    var info = document.createElement("span");
+    info.className = "game-info";
+    var title = document.createElement("span");
+    title.className = "game-title";
+    title.textContent = g.title;
+    var tag = document.createElement("span");
+    tag.className = "game-tagline";
+    tag.textContent = g.tagline;
+    info.appendChild(title);
+    info.appendChild(tag);
+
+    var play = document.createElement("span");
+    play.className = "game-play";
+    play.textContent = "▶";
+
+    card.appendChild(badge);
+    card.appendChild(info);
+    card.appendChild(play);
+    card.addEventListener("click", function () { openGame(g); });
+    return card;
+  }
+
   function renderGames() {
     gamesGrid.innerHTML = "";
-    window.RoadTripGames.list().forEach(function (g) {
-      var card = document.createElement("button");
-      card.type = "button";
-      card.className = "game-card accent-" + g.accent;
-
-      var badge = document.createElement("span");
-      badge.className = "game-badge";
-      badge.textContent = g.emoji;
-
-      var info = document.createElement("span");
-      info.className = "game-info";
-      var title = document.createElement("span");
-      title.className = "game-title";
-      title.textContent = g.title;
-      var tag = document.createElement("span");
-      tag.className = "game-tagline";
-      tag.textContent = g.tagline;
-      info.appendChild(title);
-      info.appendChild(tag);
-
-      var play = document.createElement("span");
-      play.className = "game-play";
-      play.textContent = "▶";
-
-      card.appendChild(badge);
-      card.appendChild(info);
-      card.appendChild(play);
-      card.addEventListener("click", function () { openGame(g); });
-      gamesGrid.appendChild(card);
+    var games = window.RoadTripGames.list();
+    var order = [];
+    var groups = {};
+    games.forEach(function (g) {
+      var key = g.group || "Games";
+      if (!groups[key]) { groups[key] = []; order.push(key); }
+      groups[key].push(g);
+    });
+    order.forEach(function (key) {
+      var header = document.createElement("h2");
+      header.className = "group-header";
+      header.textContent = key;
+      var count = document.createElement("span");
+      count.className = "group-count";
+      count.textContent = groups[key].length;
+      header.appendChild(count);
+      gamesGrid.appendChild(header);
+      groups[key].forEach(function (g) { gamesGrid.appendChild(makeGameCard(g)); });
     });
   }
 
