@@ -7,7 +7,6 @@
   var CAR_PICK_COUNT = 4;
 
   var STOP_POOL = [
-    "Find 3 different car brands",
     "Do 10 squats",
     "Take a group photo",
     "Find something red",
@@ -25,6 +24,7 @@
   ];
 
   var CAR_POOL = [
+    "Find 3 different car brands",
     "Play I Spy",
     "Count red cars you pass",
     "Play 20 Questions",
@@ -46,25 +46,41 @@
     return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
   }
 
-  function pickRandom(pool, count) {
-    var copy = pool.slice();
+  function shuffle(arr) {
+    var copy = arr.slice();
     for (var i = copy.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1));
       var tmp = copy[i];
       copy[i] = copy[j];
       copy[j] = tmp;
     }
-    return copy.slice(0, count).map(function (text) {
-      return { id: uid(), text: text, done: false };
-    });
+    return copy;
   }
 
+  // "Shuffle bag" picker: draws without replacement from a shuffled copy of
+  // the pool, reshuffling only once it runs out, so nothing repeats until
+  // every item in the pool has come up once.
+  function makePicker(pool, count) {
+    var queue = [];
+    return function next() {
+      while (queue.length < count) {
+        queue = queue.concat(shuffle(pool));
+      }
+      return queue.splice(0, count).map(function (text) {
+        return { id: uid(), text: text, done: false };
+      });
+    };
+  }
+
+  var nextStopMissions = makePicker(STOP_POOL, STOP_PICK_COUNT);
+  var nextCarActivities = makePicker(CAR_POOL, CAR_PICK_COUNT);
+
   function makeMissions() {
-    return pickRandom(STOP_POOL, STOP_PICK_COUNT);
+    return nextStopMissions();
   }
 
   function makeCarActivities() {
-    return pickRandom(CAR_POOL, CAR_PICK_COUNT);
+    return nextCarActivities();
   }
 
   function defaultData() {
