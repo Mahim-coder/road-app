@@ -116,8 +116,6 @@
 
   var driveBtn = document.getElementById("driveBtn");
   var stopBtn = document.getElementById("stopBtn");
-  var modeStopsBtn = document.getElementById("modeStopsBtn");
-  var modeCarBtn = document.getElementById("modeCarBtn");
   var stopsBarEl = document.getElementById("stopsBar");
   var stopsListEl = document.getElementById("stopsList");
   var addStopBtn = document.getElementById("addStopBtn");
@@ -156,10 +154,6 @@
 
     driveBtn.classList.toggle("active", isCar);
     stopBtn.classList.toggle("active", !isCar);
-    modeStopsBtn.classList.toggle("active", !isCar);
-    modeStopsBtn.setAttribute("aria-selected", String(!isCar));
-    modeCarBtn.classList.toggle("active", isCar);
-    modeCarBtn.setAttribute("aria-selected", String(isCar));
     stopsBarEl.hidden = isCar;
     renameStopBtn.hidden = isCar;
     missionInput.placeholder = isCar
@@ -266,18 +260,6 @@
 
   stopBtn.addEventListener("click", function () {
     addStop("Stop " + (state.stops.length + 1));
-    saveData();
-    render();
-  });
-
-  modeStopsBtn.addEventListener("click", function () {
-    state.mode = "stops";
-    saveData();
-    render();
-  });
-
-  modeCarBtn.addEventListener("click", function () {
-    state.mode = "car";
     saveData();
     render();
   });
