@@ -200,20 +200,15 @@
   }
 
   // Big one-tap controls for the drive / stop / drive / stop rhythm of a road trip.
-  // Starting a new leg rolls a fresh set of activities for that leg.
+  // Each just switches which single list is showing; use the reroll button
+  // to get a new random set of activities.
   driveBtn.addEventListener("click", function () {
-    if (state.mode !== "car") {
-      state.carActivities = makeCarActivities();
-    }
     state.mode = "car";
     saveData();
     render();
   });
 
   stopBtn.addEventListener("click", function () {
-    if (state.mode !== "stops") {
-      state.stopMissions = makeMissions();
-    }
     state.mode = "stops";
     saveData();
     render();
