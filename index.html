@@ -3,72 +3,79 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#1d7a5f" />
-<title>Family Find-It Road Trip</title>
+<meta name="theme-color" content="#6d5efc" />
+<title>Road Trip Quest</title>
 <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
 <header class="app-header">
-  <div class="header-inner">
-    <span class="logo">🚗</span>
-    <div class="header-text">
-      <h1>Family Find-It</h1>
-      <p class="subtitle">Spot it together, every stop and every mile</p>
+  <div class="header-top">
+    <div class="brand">
+      <span class="brand-mark">🚐</span>
+      <div class="brand-text">
+        <h1>Road Trip Quest</h1>
+        <p class="subtitle">Play together, mile after mile</p>
+      </div>
+    </div>
+    <div class="stars-pill" id="starsPill">
+      <span class="stars-icon">⭐</span>
+      <span class="stars-number" id="starsNumber">0</span>
     </div>
   </div>
-  <div class="total-finds">
-    <span class="total-finds-number" id="totalFindsNumber">0</span>
-    <span class="total-finds-label">found together</span>
+
+  <div class="tabs" role="tablist">
+    <button type="button" id="tabDriving" class="tab active" role="tab" aria-selected="true">
+      <span class="tab-emoji">🚗</span> We're Driving
+    </button>
+    <button type="button" id="tabStopped" class="tab" role="tab" aria-selected="false">
+      <span class="tab-emoji">🅿️</span> We Stopped
+    </button>
   </div>
 </header>
 
 <main>
-  <div class="trip-controls">
-    <button type="button" id="driveBtn" class="trip-btn">🚗 We're Driving</button>
-    <button type="button" id="stopBtn" class="trip-btn">🅿️ We Stopped</button>
-  </div>
-
-  <section class="progress-card">
-    <div class="progress-info">
-      <span id="progressLabel">0 of 0 found</span>
-      <span id="progressPercent">0%</span>
-    </div>
-    <div class="progress-bar-track">
-      <div id="progressBarFill" class="progress-bar-fill"></div>
-    </div>
+  <!-- DRIVING: game menu -->
+  <section id="drivingView" class="view">
+    <p class="view-lead">Pick a game and hit play — the whole car joins in.</p>
+    <div id="gamesGrid" class="games-grid"></div>
   </section>
 
-  <section class="missions-section">
-    <div class="missions-header">
-      <h2 id="currentStopName">This Stop</h2>
-      <div class="header-actions">
-        <button type="button" id="rerollBtn" class="rename-btn" aria-label="Get new activities">🔀</button>
-      </div>
+  <!-- STOPPED: fun activity list -->
+  <section id="stoppedView" class="view" hidden>
+    <div class="stopped-head">
+      <p class="view-lead">Stretch your legs and do these together at the stop.</p>
+      <button type="button" id="rerollBtn" class="icon-btn" aria-label="Get new activities">🔀</button>
     </div>
+
     <div id="celebration" class="celebration" hidden>
-      <div class="celebration-text">🎉 You found it all, team! 🎉</div>
-      <button type="button" id="celebrationRerollBtn" class="celebration-btn">Find something new</button>
+      <div class="celebration-text">🎉 You did them all, team! 🎉</div>
+      <button type="button" id="celebrationRerollBtn" class="celebration-btn">Fresh activities</button>
     </div>
-    <ul id="missionsList" class="missions-list"></ul>
-    <p id="emptyState" class="empty-state" hidden>Nothing to find yet. Add one below to get the game started!</p>
+
+    <ul id="activitiesList" class="activities-list"></ul>
+
+    <form id="addActivityForm" class="add-row">
+      <input id="activityInput" type="text" placeholder="Add your own idea…"
+        autocomplete="off" maxlength="120" />
+      <button type="submit" class="add-btn">Add</button>
+    </form>
   </section>
 </main>
 
+<!-- Full-screen game overlay -->
+<div id="gameOverlay" class="overlay" hidden>
+  <div class="overlay-bar">
+    <button type="button" id="overlayBack" class="overlay-back" aria-label="Back to games">← Back</button>
+    <span id="overlayTitle" class="overlay-title"></span>
+    <span class="overlay-spacer"></span>
+  </div>
+  <div id="overlayContent" class="overlay-content"></div>
+</div>
+
 <div id="confettiLayer" class="confetti-layer" aria-hidden="true"></div>
 
-<form id="addMissionForm" class="add-mission-bar">
-  <input
-    id="missionInput"
-    type="text"
-    placeholder="Add something to find, e.g. a Tesla"
-    autocomplete="off"
-    maxlength="120"
-    inputmode="text"
-  />
-  <button type="submit" class="add-btn" aria-label="Add mission">Add</button>
-</form>
-
+<script src="js/games.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
