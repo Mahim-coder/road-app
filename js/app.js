@@ -175,12 +175,31 @@
     overlayStarsNumberEl.textContent = state.stars;
   }
 
+  // A big star pops in the center and flies into the star counter.
+  function flyStar() {
+    var target = (overlay && !overlay.hidden) ? overlayStarsPill : starsPill;
+    if (!target) return;
+    var rect = target.getBoundingClientRect();
+    var star = document.createElement("div");
+    star.className = "fly-star";
+    star.textContent = "⭐";
+    star.style.left = (window.innerWidth / 2) + "px";
+    star.style.top = (window.innerHeight / 2) + "px";
+    document.body.appendChild(star);
+    requestAnimationFrame(function () { star.classList.add("show"); });
+    setTimeout(function () {
+      star.classList.add("fly");
+      star.style.left = (rect.left + rect.width / 2) + "px";
+      star.style.top = (rect.top + rect.height / 2) + "px";
+    }, 240);
+    setTimeout(function () { star.remove(); bump(target); }, 700);
+  }
+
   function addStars(n) {
     state.stars += n;
     saveData();
     renderStars();
-    bump(starsPill);
-    bump(overlayStarsPill);
+    flyStar();
   }
 
   // ---- players & turns ---------------------------------------------------

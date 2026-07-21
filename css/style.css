@@ -652,6 +652,30 @@ main { max-width: 620px; margin: 0 auto; padding: 18px 16px calc(28px + var(--sa
 .dice { font-size: 74px; line-height: 1; }
 .coin { font-size: 80px; line-height: 1; }
 
+/* Flying star to the counter */
+.fly-star {
+  position: fixed;
+  z-index: 90;
+  pointer-events: none;
+  font-size: 84px; line-height: 1;
+  transform: translate(-50%, -50%) scale(0.3);
+  opacity: 0;
+  will-change: transform, left, top, opacity;
+  filter: drop-shadow(0 6px 14px rgba(245, 179, 1, 0.5));
+}
+.fly-star.show {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  transition: transform 0.22s cubic-bezier(0.2, 1.5, 0.4, 1), opacity 0.15s ease;
+}
+.fly-star.fly {
+  transform: translate(-50%, -50%) scale(0.15);
+  opacity: 0.2;
+  transition: left 0.42s cubic-bezier(0.55, 0, 0.75, 0.1),
+    top 0.42s cubic-bezier(0.55, 0, 0.75, 0.1),
+    transform 0.42s ease-in, opacity 0.42s ease-in;
+}
+
 /* Confetti */
 .confetti-layer { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 70; }
 .confetti-piece { position: absolute; top: -26px; animation: confetti-fall linear forwards; }
