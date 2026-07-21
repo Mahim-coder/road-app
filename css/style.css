@@ -236,6 +236,12 @@ main {
   margin: 0;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .rename-btn {
   border: none;
   background: none;

@@ -3,20 +3,68 @@
 
   var STORAGE_KEY = "roadTripMissions";
 
-  var STOP_TEMPLATE = [
+  var STOP_PICK_COUNT = 3;
+  var CAR_PICK_COUNT = 4;
+
+  var STOP_POOL = [
     "Find 3 different car brands",
     "Do 10 squats",
-    "Take a group photo"
+    "Take a group photo",
+    "Find something red",
+    "Do 15 jumping jacks",
+    "Find a license plate from another state",
+    "Take a selfie with something interesting nearby",
+    "Find a dog",
+    "Stretch for 1 minute",
+    "Find a vending machine",
+    "Try a local snack",
+    "Find something starting with your first initial",
+    "Skip 10 times",
+    "Find a flag",
+    "Do a 30 second wall sit"
+  ];
+
+  var CAR_POOL = [
+    "Play I Spy",
+    "Count red cars you pass",
+    "Play 20 Questions",
+    "Find letters A-Z on signs, in order",
+    "Sing along to a road trip playlist",
+    "Play the license plate game",
+    "Two truths and a lie",
+    "Would you rather...?",
+    "Guess how many minutes until the next stop",
+    "Categories game (name 5 fruits, animals, etc.)",
+    "Count how many trucks you see",
+    "Tell your favorite travel story",
+    "Name 5 movies with a road in the title",
+    "Spot 3 different state license plates",
+    "Rock paper scissors, best of 5"
   ];
 
   function uid() {
     return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
   }
 
-  function makeMissions() {
-    return STOP_TEMPLATE.map(function (text) {
+  function pickRandom(pool, count) {
+    var copy = pool.slice();
+    for (var i = copy.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = copy[i];
+      copy[i] = copy[j];
+      copy[j] = tmp;
+    }
+    return copy.slice(0, count).map(function (text) {
       return { id: uid(), text: text, done: false };
     });
+  }
+
+  function makeMissions() {
+    return pickRandom(STOP_POOL, STOP_PICK_COUNT);
+  }
+
+  function makeCarActivities() {
+    return pickRandom(CAR_POOL, CAR_PICK_COUNT);
   }
 
   function defaultData() {
@@ -26,13 +74,7 @@
       stops: [
         { id: "stop-1", name: "First Stop", missions: makeMissions() }
       ],
-      carActivities: [
-        { id: uid(), text: "Play I Spy", done: false },
-        { id: uid(), text: "Count red cars you pass", done: false },
-        { id: uid(), text: "Play 20 Questions", done: false },
-        { id: uid(), text: "Find letters A-Z on signs, in order", done: false },
-        { id: uid(), text: "Sing along to a road trip playlist", done: false }
-      ]
+      carActivities: makeCarActivities()
     };
   }
 
@@ -66,6 +108,7 @@
   var clearStopsBtn = document.getElementById("clearStopsBtn");
   var currentStopNameEl = document.getElementById("currentStopName");
   var renameStopBtn = document.getElementById("renameStopBtn");
+  var rerollBtn = document.getElementById("rerollBtn");
   var missionsListEl = document.getElementById("missionsList");
   var emptyStateEl = document.getElementById("emptyState");
   var progressLabelEl = document.getElementById("progressLabel");
@@ -195,7 +238,11 @@
   }
 
   // Big one-tap controls for the drive / stop / drive / stop rhythm of a road trip.
+  // Starting a new driving leg rolls a fresh set of car activities.
   driveBtn.addEventListener("click", function () {
+    if (state.mode !== "car") {
+      state.carActivities = makeCarActivities();
+    }
     state.mode = "car";
     saveData();
     render();
@@ -241,6 +288,18 @@
     var name = window.prompt("Rename this stop:", stop.name);
     if (!name) return;
     stop.name = name.trim().slice(0, 40) || stop.name;
+    saveData();
+    render();
+  });
+
+  rerollBtn.addEventListener("click", function () {
+    var list = getActiveList();
+    if (list.length && !window.confirm("Replace current activities with a new random set?")) return;
+    if (state.mode === "car") {
+      state.carActivities = makeCarActivities();
+    } else {
+      getCurrentStop().missions = makeMissions();
+    }
     saveData();
     render();
   });
