@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#1d7a5f" />
+<title>Road Trip Missions</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-inner">
+    <span class="logo">🚗</span>
+    <div class="header-text">
+      <h1>Road Trip Missions</h1>
+      <p class="subtitle">Turn every stop into a game</p>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="stops-bar" aria-label="Stops">
+    <div id="stopsList" class="stops-list"></div>
+    <button id="addStopBtn" class="stop-chip add-stop" aria-label="Add stop">+ Stop</button>
+  </section>
+
+  <section class="progress-card">
+    <div class="progress-info">
+      <span id="progressLabel">0 / 0 completed</span>
+      <span id="progressPercent">0%</span>
+    </div>
+    <div class="progress-bar-track">
+      <div id="progressBarFill" class="progress-bar-fill"></div>
+    </div>
+  </section>
+
+  <section class="missions-section">
+    <div class="missions-header">
+      <h2 id="currentStopName">First Stop</h2>
+    </div>
+    <ul id="missionsList" class="missions-list"></ul>
+    <p id="emptyState" class="empty-state" hidden>No missions yet. Add one below to get the game started!</p>
+  </section>
+</main>
+
+<form id="addMissionForm" class="add-mission-bar">
+  <input
+    id="missionInput"
+    type="text"
+    placeholder="Add a mission, e.g. Find a Tesla"
+    autocomplete="off"
+    maxlength="120"
+  />
+  <button type="submit" class="add-btn" aria-label="Add mission">Add</button>
+</form>
+
+<script src="js/app.js"></script>
+</body>
+</html>
