@@ -86,10 +86,7 @@
   function defaultData() {
     return {
       mode: "stops",
-      currentStopId: "stop-1",
-      stops: [
-        { id: "stop-1", name: "First Stop", missions: makeMissions() }
-      ],
+      stopMissions: makeMissions(),
       carActivities: makeCarActivities()
     };
   }
@@ -99,8 +96,8 @@
       var raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return defaultData();
       var parsed = JSON.parse(raw);
-      if (!parsed.stops || !parsed.stops.length) return defaultData();
-      if (!Array.isArray(parsed.carActivities)) parsed.carActivities = defaultData().carActivities;
+      if (!Array.isArray(parsed.stopMissions)) parsed.stopMissions = makeMissions();
+      if (!Array.isArray(parsed.carActivities)) parsed.carActivities = makeCarActivities();
       if (parsed.mode !== "stops" && parsed.mode !== "car") parsed.mode = "stops";
       return parsed;
     } catch (e) {
@@ -116,12 +113,7 @@
 
   var driveBtn = document.getElementById("driveBtn");
   var stopBtn = document.getElementById("stopBtn");
-  var stopsBarEl = document.getElementById("stopsBar");
-  var stopsListEl = document.getElementById("stopsList");
-  var addStopBtn = document.getElementById("addStopBtn");
-  var clearStopsBtn = document.getElementById("clearStopsBtn");
   var currentStopNameEl = document.getElementById("currentStopName");
-  var renameStopBtn = document.getElementById("renameStopBtn");
   var rerollBtn = document.getElementById("rerollBtn");
   var missionsListEl = document.getElementById("missionsList");
   var emptyStateEl = document.getElementById("emptyState");
@@ -131,22 +123,9 @@
   var addMissionForm = document.getElementById("addMissionForm");
   var missionInput = document.getElementById("missionInput");
 
-  function getCurrentStop() {
-    var stop = state.stops.find(function (s) { return s.id === state.currentStopId; });
-    return stop || state.stops[0];
-  }
-
   // Returns the currently active activity list, regardless of mode.
   function getActiveList() {
-    return state.mode === "car" ? state.carActivities : getCurrentStop().missions;
-  }
-
-  function addStop(name) {
-    var stop = { id: uid(), name: name, missions: makeMissions() };
-    state.stops.push(stop);
-    state.currentStopId = stop.id;
-    state.mode = "stops";
-    return stop;
+    return state.mode === "car" ? state.carActivities : state.stopMissions;
   }
 
   function render() {
@@ -154,40 +133,13 @@
 
     driveBtn.classList.toggle("active", isCar);
     stopBtn.classList.toggle("active", !isCar);
-    stopsBarEl.hidden = isCar;
-    renameStopBtn.hidden = isCar;
+    currentStopNameEl.textContent = isCar ? "In the Car" : "This Stop";
     missionInput.placeholder = isCar
       ? "Add a car activity, e.g. Count red cars"
       : "Add a mission, e.g. Find a Tesla";
 
-    if (isCar) {
-      currentStopNameEl.textContent = "In the Car";
-    } else {
-      var currentStop = getCurrentStop();
-      state.currentStopId = currentStop.id;
-      currentStopNameEl.textContent = currentStop.name;
-      renderStopsBar(currentStop);
-    }
-
     renderActivities(getActiveList());
     renderProgress(getActiveList());
-  }
-
-  function renderStopsBar(currentStop) {
-    stopsListEl.innerHTML = "";
-    state.stops.forEach(function (stop) {
-      var btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "stop-chip" + (stop.id === currentStop.id ? " active" : "");
-      btn.textContent = stop.name;
-      btn.addEventListener("click", function () {
-        state.currentStopId = stop.id;
-        state.mode = "stops";
-        saveData();
-        render();
-      });
-      stopsListEl.appendChild(btn);
-    });
   }
 
   function renderActivities(list) {
@@ -248,7 +200,7 @@
   }
 
   // Big one-tap controls for the drive / stop / drive / stop rhythm of a road trip.
-  // Starting a new driving leg rolls a fresh set of car activities.
+  // Starting a new leg rolls a fresh set of activities for that leg.
   driveBtn.addEventListener("click", function () {
     if (state.mode !== "car") {
       state.carActivities = makeCarActivities();
@@ -259,33 +211,10 @@
   });
 
   stopBtn.addEventListener("click", function () {
-    addStop("Stop " + (state.stops.length + 1));
-    saveData();
-    render();
-  });
-
-  addStopBtn.addEventListener("click", function () {
-    var name = window.prompt("Name this stop:", "Stop " + (state.stops.length + 1));
-    if (!name) return;
-    addStop(name.trim().slice(0, 40) || "Stop");
-    saveData();
-    render();
-  });
-
-  clearStopsBtn.addEventListener("click", function () {
-    var confirmed = window.confirm("Remove all stops and start over with one fresh stop?");
-    if (!confirmed) return;
-    state.stops = [];
-    addStop("First Stop");
-    saveData();
-    render();
-  });
-
-  renameStopBtn.addEventListener("click", function () {
-    var stop = getCurrentStop();
-    var name = window.prompt("Rename this stop:", stop.name);
-    if (!name) return;
-    stop.name = name.trim().slice(0, 40) || stop.name;
+    if (state.mode !== "stops") {
+      state.stopMissions = makeMissions();
+    }
+    state.mode = "stops";
     saveData();
     render();
   });
@@ -296,7 +225,7 @@
     if (state.mode === "car") {
       state.carActivities = makeCarActivities();
     } else {
-      getCurrentStop().missions = makeMissions();
+      state.stopMissions = makeMissions();
     }
     saveData();
     render();

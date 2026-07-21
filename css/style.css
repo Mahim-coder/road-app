@@ -106,62 +106,6 @@ main {
   color: #fff;
 }
 
-/* Stops bar */
-.stops-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-  margin-bottom: 16px;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-
-.stops-list {
-  display: flex;
-  flex: 0 0 auto;
-  gap: 8px;
-}
-
-.stops-bar::-webkit-scrollbar {
-  display: none;
-}
-
-.stop-chip {
-  flex: 0 0 auto;
-  padding: 10px 16px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text);
-  font-size: 14px;
-  font-weight: 600;
-  white-space: nowrap;
-  cursor: pointer;
-  min-height: 40px;
-}
-
-.stop-chip.active {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: #fff;
-}
-
-.stop-chip.add-stop {
-  color: var(--primary);
-  border-style: dashed;
-}
-
-.stop-chip.clear-stops {
-  color: var(--danger);
-  border-color: var(--danger);
-}
-
-.stops-bar[hidden] {
-  display: none;
-}
-
 /* Progress */
 .progress-card {
   background: var(--surface);
