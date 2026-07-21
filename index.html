@@ -20,6 +20,11 @@
 </header>
 
 <main>
+  <div class="trip-controls">
+    <button type="button" id="driveBtn" class="trip-btn">🚗 We're Driving</button>
+    <button type="button" id="stopBtn" class="trip-btn">🅿️ We Stopped</button>
+  </div>
+
   <div class="mode-switch" role="tablist">
     <button type="button" id="modeStopsBtn" class="mode-btn active" role="tab" aria-selected="true">📍 Stops</button>
     <button type="button" id="modeCarBtn" class="mode-btn" role="tab" aria-selected="false">🚗 In the Car</button>
@@ -43,6 +48,7 @@
   <section class="missions-section">
     <div class="missions-header">
       <h2 id="currentStopName">First Stop</h2>
+      <button type="button" id="renameStopBtn" class="rename-btn" aria-label="Rename stop" hidden>✏️</button>
     </div>
     <ul id="missionsList" class="missions-list"></ul>
     <p id="emptyState" class="empty-state" hidden>No missions yet. Add one below to get the game started!</p>

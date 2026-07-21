@@ -77,6 +77,35 @@ main {
   padding: 16px;
 }
 
+/* Trip controls */
+.trip-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.trip-btn {
+  flex: 1 1 0;
+  min-height: 56px;
+  border-radius: var(--radius);
+  border: 2px solid var(--primary);
+  background: var(--surface);
+  color: var(--primary);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.trip-btn:active {
+  background: var(--primary);
+  color: #fff;
+}
+
+.trip-btn.active {
+  background: var(--primary);
+  color: #fff;
+}
+
 /* Mode switch */
 .mode-switch {
   display: flex;
@@ -193,6 +222,15 @@ main {
 .missions-header h2 {
   font-size: 17px;
   margin: 0;
+}
+
+.rename-btn {
+  border: none;
+  background: none;
+  font-size: 16px;
+  padding: 6px;
+  cursor: pointer;
+  line-height: 1;
 }
 
 .missions-list {

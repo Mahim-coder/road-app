@@ -3,8 +3,20 @@
 
   var STORAGE_KEY = "roadTripMissions";
 
+  var STOP_TEMPLATE = [
+    "Find 3 different car brands",
+    "Do 10 squats",
+    "Take a group photo"
+  ];
+
   function uid() {
     return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  }
+
+  function makeMissions() {
+    return STOP_TEMPLATE.map(function (text) {
+      return { id: uid(), text: text, done: false };
+    });
   }
 
   function defaultData() {
@@ -12,15 +24,7 @@
       mode: "stops",
       currentStopId: "stop-1",
       stops: [
-        {
-          id: "stop-1",
-          name: "First Stop",
-          missions: [
-            { id: uid(), text: "Find 3 different car brands", done: false },
-            { id: uid(), text: "Do 10 squats", done: false },
-            { id: uid(), text: "Take a group photo", done: false }
-          ]
-        }
+        { id: "stop-1", name: "First Stop", missions: makeMissions() }
       ],
       carActivities: [
         { id: uid(), text: "Play I Spy", done: false },
@@ -52,12 +56,15 @@
 
   var state = loadData();
 
+  var driveBtn = document.getElementById("driveBtn");
+  var stopBtn = document.getElementById("stopBtn");
   var modeStopsBtn = document.getElementById("modeStopsBtn");
   var modeCarBtn = document.getElementById("modeCarBtn");
   var stopsBarEl = document.getElementById("stopsBar");
   var stopsListEl = document.getElementById("stopsList");
   var addStopBtn = document.getElementById("addStopBtn");
   var currentStopNameEl = document.getElementById("currentStopName");
+  var renameStopBtn = document.getElementById("renameStopBtn");
   var missionsListEl = document.getElementById("missionsList");
   var emptyStateEl = document.getElementById("emptyState");
   var progressLabelEl = document.getElementById("progressLabel");
@@ -76,14 +83,25 @@
     return state.mode === "car" ? state.carActivities : getCurrentStop().missions;
   }
 
+  function addStop(name) {
+    var stop = { id: uid(), name: name, missions: makeMissions() };
+    state.stops.push(stop);
+    state.currentStopId = stop.id;
+    state.mode = "stops";
+    return stop;
+  }
+
   function render() {
     var isCar = state.mode === "car";
 
+    driveBtn.classList.toggle("active", isCar);
+    stopBtn.classList.toggle("active", !isCar);
     modeStopsBtn.classList.toggle("active", !isCar);
     modeStopsBtn.setAttribute("aria-selected", String(!isCar));
     modeCarBtn.classList.toggle("active", isCar);
     modeCarBtn.setAttribute("aria-selected", String(isCar));
     stopsBarEl.hidden = isCar;
+    renameStopBtn.hidden = isCar;
     missionInput.placeholder = isCar
       ? "Add a car activity, e.g. Count red cars"
       : "Add a mission, e.g. Find a Tesla";
@@ -110,6 +128,7 @@
       btn.textContent = stop.name;
       btn.addEventListener("click", function () {
         state.currentStopId = stop.id;
+        state.mode = "stops";
         saveData();
         render();
       });
@@ -174,6 +193,19 @@
     progressBarFillEl.style.width = percent + "%";
   }
 
+  // Big one-tap controls for the drive / stop / drive / stop rhythm of a road trip.
+  driveBtn.addEventListener("click", function () {
+    state.mode = "car";
+    saveData();
+    render();
+  });
+
+  stopBtn.addEventListener("click", function () {
+    addStop("Stop " + (state.stops.length + 1));
+    saveData();
+    render();
+  });
+
   modeStopsBtn.addEventListener("click", function () {
     state.mode = "stops";
     saveData();
@@ -189,10 +221,16 @@
   addStopBtn.addEventListener("click", function () {
     var name = window.prompt("Name this stop:", "Stop " + (state.stops.length + 1));
     if (!name) return;
-    var stop = { id: uid(), name: name.trim().slice(0, 40) || "Stop", missions: [] };
-    state.stops.push(stop);
-    state.currentStopId = stop.id;
-    state.mode = "stops";
+    addStop(name.trim().slice(0, 40) || "Stop");
+    saveData();
+    render();
+  });
+
+  renameStopBtn.addEventListener("click", function () {
+    var stop = getCurrentStop();
+    var name = window.prompt("Rename this stop:", stop.name);
+    if (!name) return;
+    stop.name = name.trim().slice(0, 40) || stop.name;
     saveData();
     render();
   });
