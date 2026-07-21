@@ -63,6 +63,7 @@
   var stopsBarEl = document.getElementById("stopsBar");
   var stopsListEl = document.getElementById("stopsList");
   var addStopBtn = document.getElementById("addStopBtn");
+  var clearStopsBtn = document.getElementById("clearStopsBtn");
   var currentStopNameEl = document.getElementById("currentStopName");
   var renameStopBtn = document.getElementById("renameStopBtn");
   var missionsListEl = document.getElementById("missionsList");
@@ -222,6 +223,15 @@
     var name = window.prompt("Name this stop:", "Stop " + (state.stops.length + 1));
     if (!name) return;
     addStop(name.trim().slice(0, 40) || "Stop");
+    saveData();
+    render();
+  });
+
+  clearStopsBtn.addEventListener("click", function () {
+    var confirmed = window.confirm("Remove all stops and start over with one fresh stop?");
+    if (!confirmed) return;
+    state.stops = [];
+    addStop("First Stop");
     saveData();
     render();
   });
