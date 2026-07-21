@@ -18,9 +18,15 @@
         <p class="subtitle">Play together, mile after mile</p>
       </div>
     </div>
-    <div class="stars-pill" id="starsPill">
-      <span class="stars-icon">⭐</span>
-      <span class="stars-number" id="starsNumber">0</span>
+    <div class="header-actions-top">
+      <button type="button" id="playersBtn" class="players-btn" aria-label="Manage players">
+        <span class="players-btn-icon">👥</span>
+        <span class="players-btn-count" id="playersBtnCount">0</span>
+      </button>
+      <div class="stars-pill" id="starsPill">
+        <span class="stars-icon">⭐</span>
+        <span class="stars-number" id="starsNumber">0</span>
+      </div>
     </div>
   </div>
 
@@ -75,6 +81,22 @@
     </span>
   </div>
   <div id="overlayContent" class="overlay-content"></div>
+</div>
+
+<!-- Players manager -->
+<div id="playersModal" class="modal" hidden>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2>👥 Players</h2>
+      <button type="button" id="playersClose" class="modal-close" aria-label="Close">✕</button>
+    </div>
+    <p class="players-hint">Add everyone playing. Turn-based games take turns and track each player's ⭐.</p>
+    <ul id="playersList" class="players-list"></ul>
+    <form id="addPlayerForm" class="add-row">
+      <input id="playerInput" type="text" placeholder="Add a player…" autocomplete="off" maxlength="20" />
+      <button type="submit" class="add-btn">Add</button>
+    </form>
+  </div>
 </div>
 
 <div id="confettiLayer" class="confetti-layer" aria-hidden="true"></div>

@@ -87,9 +87,12 @@
   }
   var nextActivities = makePicker(STOP_POOL, STOP_PICK_COUNT);
 
+  var PLAYER_COLORS = ["#ef4444", "#f97316", "#eab308", "#16a34a", "#0ea5a5",
+    "#3b82f6", "#8b5cf6", "#ec4899"];
+
   // ---- state -------------------------------------------------------------
   function defaultData() {
-    return { tab: "driving", activities: nextActivities(), stars: 0 };
+    return { tab: "driving", activities: nextActivities(), stars: 0, players: [], turnIndex: 0 };
   }
 
   function loadData() {
@@ -100,6 +103,8 @@
       if (!Array.isArray(p.activities) || !p.activities.length) p.activities = nextActivities();
       if (p.tab !== "driving" && p.tab !== "stopped") p.tab = "driving";
       if (typeof p.stars !== "number") p.stars = 0;
+      if (!Array.isArray(p.players)) p.players = [];
+      if (typeof p.turnIndex !== "number") p.turnIndex = 0;
       return p;
     } catch (e) { return defaultData(); }
   }
@@ -132,6 +137,14 @@
   var overlayTitle = document.getElementById("overlayTitle");
   var overlayContent = document.getElementById("overlayContent");
   var confettiLayer = document.getElementById("confettiLayer");
+
+  var playersBtn = document.getElementById("playersBtn");
+  var playersBtnCount = document.getElementById("playersBtnCount");
+  var playersModal = document.getElementById("playersModal");
+  var playersClose = document.getElementById("playersClose");
+  var playersList = document.getElementById("playersList");
+  var addPlayerForm = document.getElementById("addPlayerForm");
+  var playerInput = document.getElementById("playerInput");
 
   var CONFETTI = ["🎉", "✨", "🎊", "⭐", "🌈"];
 
@@ -169,6 +182,118 @@
     bump(starsPill);
     bump(overlayStarsPill);
   }
+
+  // ---- players & turns ---------------------------------------------------
+  function currentPlayer() {
+    if (!state.players.length) return null;
+    return state.players[state.turnIndex % state.players.length];
+  }
+
+  // Banner shown at the top of turn-based games (null when no players added).
+  function turnBanner() {
+    var p = currentPlayer();
+    if (!p) return null;
+    var b = document.createElement("div");
+    b.className = "turn-banner";
+    var dot = document.createElement("span");
+    dot.className = "turn-dot";
+    dot.style.background = p.color;
+    var label = document.createElement("span");
+    label.className = "turn-label";
+    label.textContent = "It's " + p.name + "'s turn";
+    var score = document.createElement("span");
+    score.className = "turn-score";
+    score.textContent = "⭐ " + p.stars;
+    b.appendChild(dot);
+    b.appendChild(label);
+    b.appendChild(score);
+    return b;
+  }
+
+  // Credit the current player (if any) + the shared total, then advance turn.
+  function turnAward(n) {
+    n = n || 1;
+    var p = currentPlayer();
+    if (p) {
+      p.stars += n;
+      state.turnIndex += 1;
+    }
+    addStars(n);
+    if (playersModalOpen()) renderPlayers();
+  }
+
+  function playersModalOpen() { return !playersModal.hidden; }
+
+  function renderPlayersCount() {
+    playersBtnCount.textContent = state.players.length;
+  }
+
+  function renderPlayers() {
+    playersList.innerHTML = "";
+    if (!state.players.length) {
+      var empty = document.createElement("li");
+      empty.className = "players-empty";
+      empty.textContent = "No players yet — add everyone in the car!";
+      playersList.appendChild(empty);
+    } else {
+      // Show sorted by stars (leaderboard), but keep it stable-ish.
+      var ranked = state.players.slice().sort(function (a, b) { return b.stars - a.stars; });
+      ranked.forEach(function (p, i) {
+        var li = document.createElement("li");
+        li.className = "player-row";
+        var dot = document.createElement("span");
+        dot.className = "player-dot";
+        dot.style.background = p.color;
+        var name = document.createElement("span");
+        name.className = "player-name";
+        name.textContent = p.name;
+        var stars = document.createElement("span");
+        stars.className = "player-stars";
+        stars.textContent = (i === 0 && p.stars > 0 ? "👑 " : "") + "⭐ " + p.stars;
+        var del = document.createElement("button");
+        del.type = "button";
+        del.className = "player-remove";
+        del.setAttribute("aria-label", "Remove " + p.name);
+        del.textContent = "✕";
+        del.addEventListener("click", function () {
+          state.players = state.players.filter(function (x) { return x.id !== p.id; });
+          saveData();
+          renderPlayers();
+          renderPlayersCount();
+        });
+        li.appendChild(dot);
+        li.appendChild(name);
+        li.appendChild(stars);
+        li.appendChild(del);
+        playersList.appendChild(li);
+      });
+    }
+    renderPlayersCount();
+  }
+
+  function openPlayers() { renderPlayers(); playersModal.hidden = false; }
+  function closePlayers() { playersModal.hidden = true; }
+
+  playersBtn.addEventListener("click", openPlayers);
+  playersClose.addEventListener("click", closePlayers);
+  playersModal.addEventListener("click", function (e) {
+    if (e.target === playersModal) closePlayers();
+  });
+
+  addPlayerForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var name = playerInput.value.trim().slice(0, 20);
+    if (!name) return;
+    state.players.push({
+      id: uid(), name: name,
+      color: PLAYER_COLORS[state.players.length % PLAYER_COLORS.length],
+      stars: 0
+    });
+    playerInput.value = "";
+    saveData();
+    renderPlayers();
+    renderPlayersCount();
+  });
 
   // ---- driving: game menu (grouped into sections) ------------------------
   function makeGameCard(g) {
@@ -238,7 +363,12 @@
       onCleanup: function (fn) { cleanupFns.push(fn); },
       close: closeGame,
       confetti: fireConfetti,
-      addStars: addStars
+      addStars: addStars,
+      // player/turn helpers (no-ops-friendly: turnBanner returns null if no players)
+      players: function () { return state.players.slice(); },
+      currentPlayer: currentPlayer,
+      turnBanner: turnBanner,
+      turnAward: turnAward
     };
     game.render(overlayContent, api);
     overlay.hidden = false;
@@ -407,6 +537,7 @@
 
   // ---- init --------------------------------------------------------------
   renderStars();
+  renderPlayersCount();
   renderGames();
   renderStopped();
   renderTabs();

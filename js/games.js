@@ -23,6 +23,20 @@ window.RoadTripGames = (function () {
     node.innerHTML = "";
   }
 
+  // Prepend a "whose turn" banner (does nothing if no players were added).
+  function addTurn(wrap, api) {
+    if (!api.turnBanner) return;
+    var b = api.turnBanner();
+    if (b) wrap.appendChild(b);
+  }
+
+  // Award a star: to the current player + shared total when players exist,
+  // otherwise just the shared total. Falls back gracefully.
+  function award(api, n) {
+    if (api.turnAward) api.turnAward(n || 1);
+    else api.addStars(n || 1);
+  }
+
   function shuffle(arr) {
     var a = arr.slice();
     for (var i = a.length - 1; i > 0; i--) {
@@ -484,6 +498,7 @@ window.RoadTripGames = (function () {
       clear(root);
       var word = SING_WORDS[Math.floor(Math.random() * SING_WORDS.length)];
       var wrap = el("div", "game-pane game-center");
+      addTurn(wrap, api);
       wrap.appendChild(el("div", "game-big-emoji", "🎤"));
       wrap.appendChild(el("p", "game-lead", "Sing a song that includes the word…"));
       wrap.appendChild(el("div", "sing-word", "“" + word + "”"));
@@ -493,7 +508,6 @@ window.RoadTripGames = (function () {
 
       timer = makeTimer(30, null, function () {
         done.hidden = false;
-        api.addStars(1);
       });
       wrap.appendChild(timer.el);
       wrap.appendChild(done);
@@ -503,7 +517,7 @@ window.RoadTripGames = (function () {
       sang.addEventListener("click", function () {
         if (timer) timer.stop();
         api.confetti();
-        api.addStars(2);
+        award(api, 2);
         renderRound();
       });
       wrap.appendChild(sang);
@@ -558,6 +572,7 @@ window.RoadTripGames = (function () {
     function renderChoose() {
       clear(root);
       var wrap = el("div", "game-pane game-center");
+      addTurn(wrap, api);
       wrap.appendChild(el("div", "game-big-emoji", "🎭"));
       wrap.appendChild(el("p", "game-lead", "Pick your challenge!"));
 
@@ -589,7 +604,7 @@ window.RoadTripGames = (function () {
       done.type = "button";
       done.addEventListener("click", function () {
         api.confetti();
-        api.addStars(1);
+        award(api, 1);
         renderChoose();
       });
       wrap.appendChild(done);
@@ -771,6 +786,7 @@ window.RoadTripGames = (function () {
       var list = pool();
       var word = list[Math.floor(Math.random() * list.length)];
       var wrap = el("div", "game-pane game-center");
+      addTurn(wrap, api);
       wrap.appendChild(el("p", "game-lead", "Actor: act this out! (Don't say it 🤫)"));
       wrap.appendChild(el("div", "prompt-card", word));
       var timesUp = el("div", "game-verdict bad", "⏰ Time's up!");
@@ -783,7 +799,7 @@ window.RoadTripGames = (function () {
       got.type = "button";
       got.addEventListener("click", function () {
         if (timer) timer.stop();
-        api.confetti(); api.addStars(2); renderWord();
+        api.confetti(); award(api, 2); renderWord();
       });
       wrap.appendChild(got);
       var skip = el("button", "game-cta ghost", "New word 🔁");
@@ -1140,13 +1156,14 @@ window.RoadTripGames = (function () {
         var raw = deck[i % deck.length];
         var text = opts.transform ? opts.transform(raw) : raw;
         var wrap = el("div", "game-pane game-center");
+        addTurn(wrap, api);
         if (opts.emoji) wrap.appendChild(el("div", "game-big-emoji", opts.emoji));
         if (opts.lead) wrap.appendChild(el("p", "game-lead", opts.lead));
         wrap.appendChild(el("div", "prompt-card", text));
         if (opts.note) wrap.appendChild(el("p", "game-lead", opts.note));
         var next = el("button", "game-cta", opts.cta || "Next →");
         next.type = "button";
-        next.addEventListener("click", function () { api.addStars(1); i += 1; render(); });
+        next.addEventListener("click", function () { award(api, 1); i += 1; render(); });
         wrap.appendChild(next);
         root.appendChild(wrap);
       }
@@ -1163,6 +1180,7 @@ window.RoadTripGames = (function () {
         clear(root);
         var pair = deck[i % deck.length];
         var wrap = el("div", "game-pane game-center");
+        addTurn(wrap, api);
         if (opts.emoji) wrap.appendChild(el("div", "game-big-emoji", opts.emoji));
         wrap.appendChild(el("p", "game-lead", opts.lead || "Would you rather…"));
         var a = el("button", "wyr-option wyr-a", null);
@@ -1171,7 +1189,7 @@ window.RoadTripGames = (function () {
         b.type = "button"; b.appendChild(el("span", "wyr-text", pair[1]));
         function choose(btn) {
           a.disabled = true; b.disabled = true; btn.classList.add("wyr-picked");
-          api.addStars(1); setTimeout(function () { i += 1; render(); }, 700);
+          award(api, 1); setTimeout(function () { i += 1; render(); }, 700);
         }
         a.addEventListener("click", function () { choose(a); });
         b.addEventListener("click", function () { choose(b); });
@@ -1197,6 +1215,7 @@ window.RoadTripGames = (function () {
         clear(root);
         var raw = deck[i % deck.length];
         var wrap = el("div", "game-pane game-center");
+        addTurn(wrap, api);
         if (opts.emoji) wrap.appendChild(el("div", "game-big-emoji", opts.emoji));
         if (opts.lead) wrap.appendChild(el("p", "game-lead", opts.lead));
         if (opts.display === "color") {
@@ -1215,7 +1234,7 @@ window.RoadTripGames = (function () {
         var got = el("button", "game-cta", opts.doneLabel || "Done! ⭐");
         got.type = "button";
         got.addEventListener("click", function () {
-          if (timer) timer.stop(); api.confetti(); api.addStars(1); i += 1; render();
+          if (timer) timer.stop(); api.confetti(); award(api, 1); i += 1; render();
         });
         wrap.appendChild(got);
         var skip = el("button", "game-cta ghost", "New one 🔁");
@@ -1632,7 +1651,14 @@ window.RoadTripGames = (function () {
       root.appendChild(wrap);
       timeoutId = setTimeout(function () {
         api.addStars(1);
-        render(CHOOSERS[Math.floor(Math.random() * CHOOSERS.length)]);
+        var players = api.players ? api.players() : [];
+        var result;
+        if (players.length) {
+          result = players[Math.floor(Math.random() * players.length)].name + "!";
+        } else {
+          result = CHOOSERS[Math.floor(Math.random() * CHOOSERS.length)];
+        }
+        render(result);
       }, 1100);
     }
     render(null);
