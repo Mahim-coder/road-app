@@ -124,6 +124,8 @@
   var activityInput = document.getElementById("activityInput");
   var starsNumberEl = document.getElementById("starsNumber");
   var starsPill = document.getElementById("starsPill");
+  var overlayStarsNumberEl = document.getElementById("overlayStarsNumber");
+  var overlayStarsPill = document.getElementById("overlayStarsPill");
 
   var overlay = document.getElementById("gameOverlay");
   var overlayBack = document.getElementById("overlayBack");
@@ -149,13 +151,23 @@
     }
   }
 
+  function bump(node) {
+    node.classList.remove("bump");
+    void node.offsetWidth;
+    node.classList.add("bump");
+  }
+
+  function renderStars() {
+    starsNumberEl.textContent = state.stars;
+    overlayStarsNumberEl.textContent = state.stars;
+  }
+
   function addStars(n) {
     state.stars += n;
     saveData();
-    starsNumberEl.textContent = state.stars;
-    starsPill.classList.remove("bump");
-    void starsPill.offsetWidth;
-    starsPill.classList.add("bump");
+    renderStars();
+    bump(starsPill);
+    bump(overlayStarsPill);
   }
 
   // ---- driving: game menu ------------------------------------------------
@@ -374,7 +386,7 @@
   });
 
   // ---- init --------------------------------------------------------------
-  starsNumberEl.textContent = state.stars;
+  renderStars();
   renderGames();
   renderStopped();
   renderTabs();
