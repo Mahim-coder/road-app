@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#1d7a5f" />
-<title>Road Trip Missions</title>
+<title>Family Find-It Road Trip</title>
 <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -13,9 +13,13 @@
   <div class="header-inner">
     <span class="logo">🚗</span>
     <div class="header-text">
-      <h1>Road Trip Missions</h1>
-      <p class="subtitle">Turn every stop into a game</p>
+      <h1>Family Find-It</h1>
+      <p class="subtitle">Spot it together, every stop and every mile</p>
     </div>
+  </div>
+  <div class="total-finds">
+    <span class="total-finds-number" id="totalFindsNumber">0</span>
+    <span class="total-finds-label">found together</span>
   </div>
 </header>
 
@@ -27,7 +31,7 @@
 
   <section class="progress-card">
     <div class="progress-info">
-      <span id="progressLabel">0 / 0 completed</span>
+      <span id="progressLabel">0 of 0 found</span>
       <span id="progressPercent">0%</span>
     </div>
     <div class="progress-bar-track">
@@ -42,16 +46,22 @@
         <button type="button" id="rerollBtn" class="rename-btn" aria-label="Get new activities">🔀</button>
       </div>
     </div>
+    <div id="celebration" class="celebration" hidden>
+      <div class="celebration-text">🎉 You found it all, team! 🎉</div>
+      <button type="button" id="celebrationRerollBtn" class="celebration-btn">Find something new</button>
+    </div>
     <ul id="missionsList" class="missions-list"></ul>
-    <p id="emptyState" class="empty-state" hidden>No missions yet. Add one below to get the game started!</p>
+    <p id="emptyState" class="empty-state" hidden>Nothing to find yet. Add one below to get the game started!</p>
   </section>
 </main>
+
+<div id="confettiLayer" class="confetti-layer" aria-hidden="true"></div>
 
 <form id="addMissionForm" class="add-mission-bar">
   <input
     id="missionInput"
     type="text"
-    placeholder="Add a mission, e.g. Find a Tesla"
+    placeholder="Add something to find, e.g. a Tesla"
     autocomplete="off"
     maxlength="120"
     inputmode="text"

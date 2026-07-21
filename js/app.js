@@ -42,6 +42,8 @@
     "Rock paper scissors, best of 5"
   ];
 
+  var CONFETTI_EMOJI = ["🎉", "✨", "🎊", "⭐"];
+
   function uid() {
     return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
   }
@@ -87,7 +89,8 @@
     return {
       mode: "stops",
       stopMissions: makeMissions(),
-      carActivities: makeCarActivities()
+      carActivities: makeCarActivities(),
+      totalFinds: 0
     };
   }
 
@@ -99,6 +102,7 @@
       if (!Array.isArray(parsed.stopMissions)) parsed.stopMissions = makeMissions();
       if (!Array.isArray(parsed.carActivities)) parsed.carActivities = makeCarActivities();
       if (parsed.mode !== "stops" && parsed.mode !== "car") parsed.mode = "stops";
+      if (typeof parsed.totalFinds !== "number") parsed.totalFinds = 0;
       return parsed;
     } catch (e) {
       return defaultData();
@@ -110,6 +114,8 @@
   }
 
   var state = loadData();
+  var lastFoundId = null;
+  var celebrating = false;
 
   var driveBtn = document.getElementById("driveBtn");
   var stopBtn = document.getElementById("stopBtn");
@@ -122,10 +128,40 @@
   var progressBarFillEl = document.getElementById("progressBarFill");
   var addMissionForm = document.getElementById("addMissionForm");
   var missionInput = document.getElementById("missionInput");
+  var totalFindsNumberEl = document.getElementById("totalFindsNumber");
+  var celebrationEl = document.getElementById("celebration");
+  var celebrationRerollBtn = document.getElementById("celebrationRerollBtn");
+  var confettiLayerEl = document.getElementById("confettiLayer");
 
   // Returns the currently active activity list, regardless of mode.
   function getActiveList() {
     return state.mode === "car" ? state.carActivities : state.stopMissions;
+  }
+
+  function rerollActiveList() {
+    if (state.mode === "car") {
+      state.carActivities = makeCarActivities();
+    } else {
+      state.stopMissions = makeMissions();
+    }
+  }
+
+  function fireConfetti() {
+    for (var i = 0; i < 28; i++) {
+      var piece = document.createElement("span");
+      piece.className = "confetti-piece";
+      piece.textContent = CONFETTI_EMOJI[Math.floor(Math.random() * CONFETTI_EMOJI.length)];
+      piece.style.left = Math.random() * 100 + "%";
+      piece.style.animationDelay = Math.random() * 0.3 + "s";
+      piece.style.animationDuration = 1.4 + Math.random() * 0.8 + "s";
+      piece.style.fontSize = 14 + Math.random() * 14 + "px";
+      confettiLayerEl.appendChild(piece);
+      (function (el) {
+        el.addEventListener("animationend", function () {
+          el.remove();
+        });
+      })(piece);
+    }
   }
 
   function render() {
@@ -135,11 +171,14 @@
     stopBtn.classList.toggle("active", !isCar);
     currentStopNameEl.textContent = isCar ? "In the Car" : "This Stop";
     missionInput.placeholder = isCar
-      ? "Add a car activity, e.g. Count red cars"
-      : "Add a mission, e.g. Find a Tesla";
+      ? "Add something to find, e.g. a red truck"
+      : "Add something to find, e.g. a Tesla";
+    totalFindsNumberEl.textContent = state.totalFinds;
 
-    renderActivities(getActiveList());
-    renderProgress(getActiveList());
+    var list = getActiveList();
+    renderActivities(list);
+    renderProgress(list);
+    renderCelebration(list);
   }
 
   function renderActivities(list) {
@@ -155,25 +194,43 @@
       var li = document.createElement("li");
       li.className = "mission-item";
 
-      var checkbox = document.createElement("button");
-      checkbox.type = "button";
-      checkbox.className = "mission-checkbox" + (item.done ? " checked" : "");
-      checkbox.setAttribute("aria-label", item.done ? "Mark incomplete" : "Mark complete");
-      checkbox.textContent = item.done ? "✓" : "";
-      checkbox.addEventListener("click", function () {
+      var findBtn = document.createElement("button");
+      findBtn.type = "button";
+      findBtn.className = "find-btn" + (item.done ? " found" : "") + (item.id === lastFoundId ? " pop" : "");
+      findBtn.setAttribute("aria-label", item.done ? "Mark as not found yet" : "Mark as found");
+      findBtn.addEventListener("click", function () {
+        var wasDone = item.done;
         item.done = !item.done;
+        if (!wasDone && item.done) {
+          state.totalFinds += 1;
+          lastFoundId = item.id;
+        } else {
+          lastFoundId = null;
+        }
         saveData();
         render();
       });
 
+      var icon = document.createElement("span");
+      icon.className = "find-icon";
+      icon.textContent = item.done ? "✅" : "🔍";
+
       var text = document.createElement("span");
-      text.className = "mission-text" + (item.done ? " done" : "");
+      text.className = "find-text";
       text.textContent = item.text;
+
+      var status = document.createElement("span");
+      status.className = "find-status";
+      status.textContent = item.done ? "Found!" : "Spot it";
+
+      findBtn.appendChild(icon);
+      findBtn.appendChild(text);
+      findBtn.appendChild(status);
 
       var del = document.createElement("button");
       del.type = "button";
       del.className = "mission-delete";
-      del.setAttribute("aria-label", "Delete activity");
+      del.setAttribute("aria-label", "Remove from list");
       del.textContent = "✕";
       del.addEventListener("click", function () {
         var index = list.indexOf(item);
@@ -182,11 +239,12 @@
         render();
       });
 
-      li.appendChild(checkbox);
-      li.appendChild(text);
+      li.appendChild(findBtn);
       li.appendChild(del);
       missionsListEl.appendChild(li);
     });
+
+    lastFoundId = null;
   }
 
   function renderProgress(list) {
@@ -194,9 +252,21 @@
     var done = list.filter(function (m) { return m.done; }).length;
     var percent = total ? Math.round((done / total) * 100) : 0;
 
-    progressLabelEl.textContent = done + " / " + total + " completed";
+    progressLabelEl.textContent = done + " of " + total + " found";
     progressPercentEl.textContent = percent + "%";
     progressBarFillEl.style.width = percent + "%";
+  }
+
+  function renderCelebration(list) {
+    var allFound = list.length > 0 && list.every(function (m) { return m.done; });
+    if (allFound && !celebrating) {
+      celebrating = true;
+      celebrationEl.hidden = false;
+      fireConfetti();
+    } else if (!allFound) {
+      celebrating = false;
+      celebrationEl.hidden = true;
+    }
   }
 
   // Big one-tap controls for the drive / stop / drive / stop rhythm of a road trip.
@@ -217,11 +287,13 @@
   rerollBtn.addEventListener("click", function () {
     var list = getActiveList();
     if (list.length && !window.confirm("Replace current activities with a new random set?")) return;
-    if (state.mode === "car") {
-      state.carActivities = makeCarActivities();
-    } else {
-      state.stopMissions = makeMissions();
-    }
+    rerollActiveList();
+    saveData();
+    render();
+  });
+
+  celebrationRerollBtn.addEventListener("click", function () {
+    rerollActiveList();
     saveData();
     render();
   });
