@@ -440,6 +440,11 @@ main { max-width: 620px; margin: 0 auto; padding: 18px 16px calc(28px + var(--sa
 .game-center { align-items: center; text-align: center; }
 .game-lead { color: var(--muted); font-size: 14.5px; margin: 0; }
 .game-big-emoji { font-size: 64px; line-height: 1; margin-top: 8px; }
+.dance-emoji { animation: dance-bounce 0.5s ease-in-out infinite; }
+@keyframes dance-bounce {
+  0%, 100% { transform: translateY(0) rotate(-8deg); }
+  50% { transform: translateY(-10px) rotate(8deg); }
+}
 .game-result-title { font-size: 22px; font-weight: 800; margin: 0; }
 
 .game-cta {

@@ -1743,6 +1743,190 @@ window.RoadTripGames = (function () {
     renderStart();
   }
 
+  // =======================================================================
+  // MUSIC GAMES (app plays melodies via the Web Audio API — no files needed)
+  // =======================================================================
+  var audioCtx = null;
+  function getCtx() {
+    if (!audioCtx) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      audioCtx = new AC();
+    }
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    return audioCtx;
+  }
+
+  var NOTE_FREQ = {
+    C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.00,
+    A4: 440.00, B4: 493.88, C5: 523.25, D5: 587.33, REST: 0
+  };
+
+  // Play a melody: seq is [[note, beats], ...]. Returns { stop }.
+  function playMelody(seq, opts) {
+    opts = opts || {};
+    var ctx = getCtx();
+    if (!ctx) return { stop: function () {} };
+    var beat = 60 / (opts.bpm || 140);
+    var t = ctx.currentTime + 0.06;
+    var master = ctx.createGain();
+    master.gain.value = 0.22;
+    master.connect(ctx.destination);
+    var oscs = [];
+    seq.forEach(function (n) {
+      var dur = n[1] * beat;
+      var freq = NOTE_FREQ[n[0]] || 0;
+      if (freq > 0) {
+        var osc = ctx.createOscillator();
+        osc.type = opts.wave || "triangle";
+        osc.frequency.value = freq;
+        var g = ctx.createGain();
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(1, t + 0.02);
+        g.gain.setValueAtTime(1, t + dur * 0.75);
+        g.gain.linearRampToValueAtTime(0, t + dur * 0.97);
+        osc.connect(g); g.connect(master);
+        osc.start(t); osc.stop(t + dur);
+        oscs.push(osc);
+      }
+      t += dur;
+    });
+    return {
+      stop: function () {
+        oscs.forEach(function (o) { try { o.stop(); } catch (e) {} });
+        try { master.disconnect(); } catch (e) {}
+      }
+    };
+  }
+
+  // Name That Tune — the app plays a classic melody; players guess the song.
+  var TUNES = [
+    { name: "Twinkle Twinkle Little Star", bpm: 150, notes: [
+      ["C4",1],["C4",1],["G4",1],["G4",1],["A4",1],["A4",1],["G4",2],
+      ["F4",1],["F4",1],["E4",1],["E4",1],["D4",1],["D4",1],["C4",2] ] },
+    { name: "Mary Had a Little Lamb", bpm: 150, notes: [
+      ["E4",1],["D4",1],["C4",1],["D4",1],["E4",1],["E4",1],["E4",2],
+      ["D4",1],["D4",1],["D4",2],["E4",1],["G4",1],["G4",2] ] },
+    { name: "Jingle Bells", bpm: 160, notes: [
+      ["E4",1],["E4",1],["E4",2],["E4",1],["E4",1],["E4",2],
+      ["E4",1],["G4",1],["C4",1],["D4",1],["E4",4] ] },
+    { name: "Happy Birthday", bpm: 140, notes: [
+      ["G4",1],["G4",1],["A4",1],["G4",1],["C5",1],["B4",2],
+      ["G4",1],["G4",1],["A4",1],["G4",1],["D5",1],["C5",2] ] },
+    { name: "Old MacDonald Had a Farm", bpm: 150, notes: [
+      ["G4",1],["G4",1],["G4",1],["D4",1],["E4",1],["E4",1],["D4",2],
+      ["B4",1],["B4",1],["A4",1],["A4",1],["G4",2] ] },
+    { name: "Row, Row, Row Your Boat", bpm: 150, notes: [
+      ["C4",1],["C4",1],["C4",1],["D4",1],["E4",2],
+      ["E4",1],["D4",1],["E4",1],["F4",1],["G4",3] ] },
+    { name: "London Bridge", bpm: 150, notes: [
+      ["G4",1],["A4",1],["G4",1],["F4",1],["E4",1],["F4",1],["G4",2],
+      ["D4",1],["E4",1],["F4",2],["E4",1],["F4",1],["G4",2] ] },
+    { name: "Ode to Joy", bpm: 150, notes: [
+      ["E4",1],["E4",1],["F4",1],["G4",1],["G4",1],["F4",1],["E4",1],["D4",1],
+      ["C4",1],["C4",1],["D4",1],["E4",1],["E4",2],["D4",2] ] },
+    { name: "Frère Jacques (Are You Sleeping)", bpm: 150, notes: [
+      ["C4",1],["D4",1],["E4",1],["C4",1],["C4",1],["D4",1],["E4",1],["C4",1],
+      ["E4",1],["F4",1],["G4",2],["E4",1],["F4",1],["G4",2] ] }
+  ];
+
+  function nameThatTuneGame(root, api) {
+    var deck = shuffle(TUNES), i = 0, current = null;
+    api.onCleanup(function () { if (current) current.stop(); });
+    function render() {
+      if (current) { current.stop(); current = null; }
+      clear(root);
+      var tune = deck[i % deck.length];
+      var wrap = el("div", "game-pane game-center");
+      addTurn(wrap, api);
+      wrap.appendChild(el("div", "game-big-emoji", "🎵"));
+      wrap.appendChild(el("p", "game-lead", "Tap play and guess the song!"));
+      var play = el("button", "game-cta", "▶ Play the tune");
+      play.type = "button";
+      play.addEventListener("click", function () {
+        if (current) current.stop();
+        current = playMelody(tune.notes, { bpm: tune.bpm });
+      });
+      wrap.appendChild(play);
+      var answer = el("div", "game-verdict good", "🎶 " + tune.name);
+      answer.hidden = true;
+      wrap.appendChild(answer);
+      var got = el("button", "game-cta", "We got it! ⭐");
+      got.type = "button";
+      got.addEventListener("click", function () {
+        if (current) current.stop();
+        api.confetti(); award(api, 1); i += 1; render();
+      });
+      wrap.appendChild(got);
+      var reveal = el("button", "game-cta ghost", "Reveal answer 👀");
+      reveal.type = "button";
+      reveal.addEventListener("click", function () { answer.hidden = false; reveal.hidden = true; });
+      wrap.appendChild(reveal);
+      var next = el("button", "game-cta ghost", "Skip / Next →");
+      next.type = "button";
+      next.addEventListener("click", function () { if (current) current.stop(); i += 1; render(); });
+      wrap.appendChild(next);
+      root.appendChild(wrap);
+    }
+    render();
+  }
+
+  // Freeze Dance — music plays, then randomly stops. Freeze!
+  function freezeDanceGame(root, api) {
+    var current = null, tid = null;
+    api.onCleanup(cleanup);
+    function cleanup() {
+      if (current) { current.stop(); current = null; }
+      if (tid) { clearTimeout(tid); tid = null; }
+    }
+    function renderStart() {
+      cleanup(); clear(root);
+      var wrap = el("div", "game-pane game-center");
+      wrap.appendChild(el("div", "game-big-emoji", "🕺"));
+      wrap.appendChild(el("p", "game-lead", "Dance while the music plays… FREEZE the instant it stops! Last one moving is out."));
+      var go = el("button", "game-cta", "Start the music 🎶");
+      go.type = "button";
+      go.addEventListener("click", dance);
+      wrap.appendChild(go);
+      root.appendChild(wrap);
+    }
+    function dance() {
+      cleanup(); clear(root);
+      var wrap = el("div", "game-pane game-center");
+      wrap.appendChild(el("div", "game-big-emoji dance-emoji", "🪩"));
+      wrap.appendChild(el("p", "game-lead", "Dance! 💃🕺 …until it stops!"));
+      var stop = el("button", "game-cta ghost", "Stop music");
+      stop.type = "button";
+      stop.addEventListener("click", renderStart);
+      wrap.appendChild(stop);
+      root.appendChild(wrap);
+      var scale = ["C4", "D4", "E4", "G4", "A4", "C5", "A4", "G4", "E4", "D4"];
+      var notes = [];
+      for (var k = 0; k < 160; k++) notes.push([scale[Math.floor(Math.random() * scale.length)], 0.5]);
+      current = playMelody(notes, { bpm: 150, wave: "square" });
+      tid = setTimeout(freeze, 3000 + Math.random() * 7000);
+    }
+    function freeze() {
+      if (current) { current.stop(); current = null; }
+      clear(root);
+      var wrap = el("div", "game-pane game-center");
+      wrap.appendChild(el("div", "game-big-emoji", "🧊"));
+      wrap.appendChild(el("h3", "game-result-title", "FREEZE! 🥶"));
+      wrap.appendChild(el("p", "game-lead", "Last one to freeze is out!"));
+      api.confetti();
+      var again = el("button", "game-cta", "Dance again 🎶");
+      again.type = "button";
+      again.addEventListener("click", dance);
+      wrap.appendChild(again);
+      var back = el("button", "game-cta ghost", "End");
+      back.type = "button";
+      back.addEventListener("click", renderStart);
+      wrap.appendChild(back);
+      root.appendChild(wrap);
+    }
+    renderStart();
+  }
+
   // ---- registry ----------------------------------------------------------
   var ACCENTS = ["teal", "purple", "orange", "pink", "blue", "red", "green", "indigo"];
 
@@ -1772,6 +1956,8 @@ window.RoadTripGames = (function () {
       tagline: "Can they spot your fib?", render: promptDeckEngine(PD_TWOTRUTHS, { emoji: "🤥", cta: "Next player →" }) },
     { id: "silly", title: "Silly Questions", emoji: "🤪", group: "Party & Laughs",
       tagline: "Wonderfully weird what-ifs", render: promptDeckEngine(PD_SILLY, { emoji: "🤪", cta: "Next question →" }) },
+    { id: "freeze", title: "Freeze Dance", emoji: "🪩", group: "Party & Laughs",
+      tagline: "Dance, then freeze when the music stops!", render: freezeDanceGame },
 
     // ---- Guess & Reveal ----
     { id: "emoji", title: "Emoji Movie Riddle", emoji: "🎬", group: "Guess & Reveal",
@@ -1792,6 +1978,8 @@ window.RoadTripGames = (function () {
       tagline: "Name the country from a clue", render: revealEngine(RV_COUNTRY, { emoji: "🌍", lead: "Where in the world?" }) },
     { id: "jokes", title: "Joke Machine", emoji: "😂", group: "Guess & Reveal",
       tagline: "Guess the punchline!", render: revealEngine(RV_JOKES, { emoji: "😂", lead: "Can you guess the punchline?" }) },
+    { id: "nameTune", title: "Name That Tune", emoji: "🎵", group: "Guess & Reveal",
+      tagline: "The app plays it — you guess the song!", render: nameThatTuneGame },
 
     // ---- Quizzes ----
     { id: "quiz", title: "Road Trip Quiz", emoji: "🧠", group: "Quizzes",
