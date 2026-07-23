@@ -1927,6 +1927,148 @@ window.RoadTripGames = (function () {
     renderStart();
   }
 
+  // =======================================================================
+  // STORY TIME — listen to a short story on Spotify, then answer questions
+  // =======================================================================
+  var STORIES = [
+    { title: "The Three Little Pigs", emoji: "🐷", blurb: "Huff, puff & brick houses",
+      spotify: "The Three Little Pigs story for kids", questions: [
+        { q: "What did the wolf want to do to the houses?", a: ["Paint them", "Blow them down", "Buy them", "Clean them"], c: 1 },
+        { q: "Which house did the wolf NOT blow down?", a: ["Straw", "Sticks", "Bricks", "Paper"], c: 2 },
+        { q: "How did the wolf try to knock the houses down?", a: ["Kicking", "Huffing and puffing", "A hammer", "A truck"], c: 1 },
+        { q: "Who was safe at the end?", a: ["The wolf", "The three pigs", "A farmer", "Nobody"], c: 1 } ] },
+    { title: "Goldilocks & the Three Bears", emoji: "🐻", blurb: "Too hot, too cold, just right",
+      spotify: "Goldilocks and the Three Bears story for kids", questions: [
+        { q: "How many bears lived in the house?", a: ["Two", "Three", "Four", "Five"], c: 1 },
+        { q: "What food did Goldilocks eat?", a: ["Soup", "Porridge", "Cake", "Pizza"], c: 1 },
+        { q: "Whose chair did she break?", a: ["Papa Bear's", "Mama Bear's", "Baby Bear's", "Nobody's"], c: 2 },
+        { q: "What did Goldilocks do when the bears came home?", a: ["Made tea", "Ran away", "Took a nap", "Said hello"], c: 1 } ] },
+    { title: "Little Red Riding Hood", emoji: "🧺", blurb: "A basket, a wolf & a woodsman",
+      spotify: "Little Red Riding Hood story for kids", questions: [
+        { q: "Where was Little Red Riding Hood going?", a: ["To school", "To Grandma's house", "To the shop", "To a castle"], c: 1 },
+        { q: "What did she carry in her basket?", a: ["Toys", "Goodies to eat", "Money", "Books"], c: 1 },
+        { q: "Who did she meet in the woods?", a: ["A fox", "A wolf", "A bear", "A witch"], c: 1 },
+        { q: "Who saved her in the end?", a: ["A woodsman", "A prince", "A fairy", "A dog"], c: 0 } ] },
+    { title: "The Tortoise & the Hare", emoji: "🐢", blurb: "Slow and steady wins the race",
+      spotify: "The Tortoise and the Hare story for kids", questions: [
+        { q: "What kind of race did they have?", a: ["Swimming", "Running", "Flying", "Jumping"], c: 1 },
+        { q: "Who was faster at the start?", a: ["The tortoise", "The hare", "They tied", "A rabbit"], c: 1 },
+        { q: "Why did the hare lose?", a: ["He got lost", "He took a nap", "He tripped", "He gave up"], c: 1 },
+        { q: "What is the lesson of the story?", a: ["Be the fastest", "Slow and steady wins", "Never race", "Sleep a lot"], c: 1 } ] },
+    { title: "Jack and the Beanstalk", emoji: "🌱", blurb: "Magic beans & a giant",
+      spotify: "Jack and the Beanstalk story for kids", questions: [
+        { q: "What did Jack trade the cow for?", a: ["Gold", "Magic beans", "A hen", "A map"], c: 1 },
+        { q: "What grew overnight?", a: ["A tree", "A beanstalk", "A flower", "A tower"], c: 1 },
+        { q: "Who lived at the top?", a: ["A giant", "A dragon", "A king", "A witch"], c: 0 },
+        { q: "How did Jack escape the giant?", a: ["He flew away", "He chopped down the beanstalk", "He hid", "He ran"], c: 1 } ] },
+    { title: "The Gingerbread Man", emoji: "🍪", blurb: "Run, run as fast as you can!",
+      spotify: "The Gingerbread Man story for kids", questions: [
+        { q: "Who baked the gingerbread man?", a: ["A king", "An old woman", "A chef", "A child"], c: 1 },
+        { q: "What did the gingerbread man say?", a: ["Hello!", "You can't catch me!", "I'm sleepy", "Good night"], c: 1 },
+        { q: "Who finally caught him?", a: ["A dog", "A fox", "A cat", "A cow"], c: 1 },
+        { q: "How did the fox trick him?", a: ["With candy", "A ride across the river", "A song", "A nap"], c: 1 } ] }
+  ];
+
+  function storyTimeGame(root, api) {
+    function renderMenu() {
+      clear(root);
+      var wrap = el("div", "game-pane");
+      wrap.appendChild(el("p", "game-lead", "Pick a story, listen to it together on Spotify, then answer the questions!"));
+      STORIES.forEach(function (s) {
+        var card = el("button", "story-card", null);
+        card.type = "button";
+        card.appendChild(el("span", "story-emoji", s.emoji));
+        var info = el("span", "story-info", null);
+        info.appendChild(el("span", "story-title", s.title));
+        info.appendChild(el("span", "story-blurb", s.blurb));
+        card.appendChild(info);
+        card.appendChild(el("span", "game-play", "▶"));
+        card.addEventListener("click", function () { renderStory(s); });
+        wrap.appendChild(card);
+      });
+      root.appendChild(wrap);
+    }
+
+    function renderStory(s) {
+      clear(root);
+      var wrap = el("div", "game-pane game-center");
+      wrap.appendChild(el("div", "game-big-emoji", s.emoji));
+      wrap.appendChild(el("h3", "game-result-title", s.title));
+      wrap.appendChild(el("p", "game-lead", "Play it on Spotify and listen together. Then come back and tap Quiz Us!"));
+      var link = el("a", "game-cta spotify-btn", "🎧 Listen on Spotify");
+      link.href = "https://open.spotify.com/search/" + encodeURIComponent(s.spotify);
+      link.target = "_blank";
+      link.rel = "noopener";
+      wrap.appendChild(link);
+      var quiz = el("button", "game-cta", "We listened — Quiz us! ⭐");
+      quiz.type = "button";
+      quiz.addEventListener("click", function () { renderQuiz(s); });
+      wrap.appendChild(quiz);
+      var back = el("button", "game-cta ghost", "↩ Pick another story");
+      back.type = "button";
+      back.addEventListener("click", renderMenu);
+      wrap.appendChild(back);
+      root.appendChild(wrap);
+    }
+
+    function renderQuiz(s) {
+      var questions = s.questions, idx = 0, score = 0;
+      function q() {
+        clear(root);
+        var item = questions[idx];
+        var wrap = el("div", "game-pane");
+        var head = el("div", "quiz-head");
+        head.appendChild(el("span", "quiz-progress", "Question " + (idx + 1) + " / " + questions.length));
+        head.appendChild(el("span", "quiz-score", "⭐ " + score));
+        wrap.appendChild(head);
+        wrap.appendChild(el("h3", "quiz-question", item.q));
+        var opts = el("div", "quiz-options"), btns = [], answered = false;
+        item.a.forEach(function (text, i) {
+          var b = el("button", "quiz-option", text);
+          b.type = "button";
+          b.addEventListener("click", function () {
+            if (answered) return;
+            answered = true;
+            btns.forEach(function (bb, j) {
+              bb.disabled = true;
+              if (j === item.c) bb.classList.add("correct");
+              else if (j === i) bb.classList.add("wrong");
+            });
+            if (i === item.c) score += 1;
+            var next = el("button", "game-cta", idx + 1 < questions.length ? "Next →" : "See results 🎉");
+            next.type = "button";
+            next.addEventListener("click", function () {
+              idx += 1;
+              if (idx < questions.length) q(); else results();
+            });
+            wrap.appendChild(next);
+          });
+          btns.push(b); opts.appendChild(b);
+        });
+        wrap.appendChild(opts);
+        root.appendChild(wrap);
+      }
+      function results() {
+        clear(root);
+        var wrap = el("div", "game-pane game-center");
+        var pct = score / questions.length;
+        wrap.appendChild(el("div", "game-big-emoji", pct >= 0.8 ? "🌟" : pct >= 0.5 ? "🎉" : "📚"));
+        wrap.appendChild(el("h3", "game-result-title", "You scored " + score + " / " + questions.length));
+        wrap.appendChild(el("p", "game-lead", pct >= 0.5 ? "Great listening!" : "Give it another listen and try again!"));
+        if (pct >= 0.5) api.confetti();
+        api.addStars(score);
+        var again = el("button", "game-cta", "Another story 📖");
+        again.type = "button";
+        again.addEventListener("click", renderMenu);
+        wrap.appendChild(again);
+        root.appendChild(wrap);
+      }
+      q();
+    }
+
+    renderMenu();
+  }
+
   // ---- registry ----------------------------------------------------------
   var ACCENTS = ["teal", "purple", "orange", "pink", "blue", "red", "green", "indigo"];
 
@@ -2002,6 +2144,8 @@ window.RoadTripGames = (function () {
       tagline: "All about you", render: quizEngine(QZ_BODY) },
     { id: "qzSilly", title: "Silly Trivia", emoji: "🤓", group: "Quizzes",
       tagline: "Easy & fun for everyone", render: quizEngine(QZ_SILLY) },
+    { id: "storyTime", title: "Story Time (Spotify)", emoji: "🎧", group: "Quizzes",
+      tagline: "Listen to a story, then answer questions", render: storyTimeGame },
 
     // ---- Spot & Race ----
     { id: "carBrands", title: "Car Brand Hunt", emoji: "🚗", group: "Spot & Race",

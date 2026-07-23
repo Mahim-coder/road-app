@@ -681,6 +681,30 @@ main { max-width: 620px; margin: 0 auto; padding: 18px 16px calc(28px + var(--sa
     transform 0.42s ease-in, opacity 0.42s ease-in;
 }
 
+/* Story Time */
+.story-card {
+  display: flex; align-items: center; gap: 12px;
+  width: 100%;
+  text-align: left;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+.story-card:active { transform: scale(0.99); }
+.story-emoji { flex: 0 0 auto; font-size: 30px; }
+.story-info { flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.story-title { font-weight: 800; font-size: 15px; }
+.story-blurb { font-size: 12.5px; color: var(--muted); }
+.spotify-btn {
+  background: #1db954 !important;
+  box-shadow: 0 8px 18px rgba(29, 185, 84, 0.35) !important;
+  text-decoration: none;
+  display: block; text-align: center;
+}
+
 /* Confetti */
 .confetti-layer { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 70; }
 .confetti-piece { position: absolute; top: -26px; animation: confetti-fall linear forwards; }
