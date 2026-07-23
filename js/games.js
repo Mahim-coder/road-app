@@ -1331,6 +1331,70 @@ window.RoadTripGames = (function () {
     { q: "What melts in the sun?", a: ["A rock", "Ice cream", "A spoon", "A cup"], c: 1 },
     { q: "Which is heaviest?", a: ["A feather", "A brick", "A leaf", "A balloon"], c: 1 }
   ];
+  var QZ_DINO = [
+    { q: "Which dinosaur was a huge meat-eater?", a: ["Stegosaurus", "T-Rex", "Triceratops", "Brontosaurus"], c: 1 },
+    { q: "What did plant-eating dinosaurs eat?", a: ["Meat", "Plants", "Rocks", "Fish"], c: 1 },
+    { q: "How do we learn about dinosaurs today?", a: ["Photos", "Fossils", "Videos", "Letters"], c: 1 },
+    { q: "Which dinosaur had three horns?", a: ["T-Rex", "Triceratops", "Raptor", "Stegosaurus"], c: 1 },
+    { q: "When did dinosaurs live?", a: ["Last year", "Millions of years ago", "Next year", "Yesterday"], c: 1 },
+    { q: "Which flying reptile lived with dinosaurs?", a: ["Pterodactyl", "Eagle", "Bat", "Parrot"], c: 0 }
+  ];
+  var QZ_OCEAN = [
+    { q: "What is the largest animal in the ocean?", a: ["Shark", "Blue whale", "Octopus", "Dolphin"], c: 1 },
+    { q: "How many arms does an octopus have?", a: ["6", "8", "10", "4"], c: 1 },
+    { q: "Which fish is orange with white stripes?", a: ["Clownfish", "Tuna", "Shark", "Eel"], c: 0 },
+    { q: "Which way does a crab usually walk?", a: ["Backwards", "Sideways", "Only up", "It hops"], c: 1 },
+    { q: "What do dolphins breathe?", a: ["Water", "Air", "Sand", "Bubbles"], c: 1 },
+    { q: "Which sea creature can squirt ink?", a: ["Octopus", "Dolphin", "Whale", "Crab"], c: 0 }
+  ];
+  var QZ_WEATHER = [
+    { q: "What falls from clouds as rain?", a: ["Water", "Sand", "Juice", "Milk"], c: 0 },
+    { q: "What do we see after rain and sun together?", a: ["Snow", "A rainbow", "Fog", "Hail"], c: 1 },
+    { q: "What is frozen rain called?", a: ["Hail", "Fog", "Dew", "Mist"], c: 0 },
+    { q: "What makes a loud boom in a storm?", a: ["Thunder", "Wind", "Rain", "Clouds"], c: 0 },
+    { q: "What do we use to stay dry in the rain?", a: ["Sunglasses", "An umbrella", "A fan", "A hat"], c: 1 },
+    { q: "Snow is usually…", a: ["Hot", "Cold", "Spicy", "Sticky"], c: 1 }
+  ];
+  var QZ_COLORS = [
+    { q: "What color is the sky on a sunny day?", a: ["Green", "Blue", "Red", "Brown"], c: 1 },
+    { q: "Mix red and yellow to get…", a: ["Green", "Orange", "Purple", "Blue"], c: 1 },
+    { q: "How many sides does a triangle have?", a: ["3", "4", "5", "6"], c: 0 },
+    { q: "What color is grass?", a: ["Blue", "Green", "Pink", "Grey"], c: 1 },
+    { q: "A shape that is perfectly round is a…", a: ["Square", "Circle", "Triangle", "Star"], c: 1 },
+    { q: "Mix blue and yellow to get…", a: ["Green", "Orange", "Red", "Pink"], c: 0 }
+  ];
+  var QZ_MUSIC = [
+    { q: "How many strings does a guitar usually have?", a: ["4", "6", "8", "10"], c: 1 },
+    { q: "What do you hit to keep a beat?", a: ["Drums", "Flute", "Piano", "Harp"], c: 0 },
+    { q: "What do we call the words in a song?", a: ["Lyrics", "Pages", "Notes", "Titles"], c: 0 },
+    { q: "A piano has black keys and…", a: ["Red keys", "White keys", "Blue keys", "No keys"], c: 1 },
+    { q: "Which is a wind instrument?", a: ["Flute", "Drum", "Guitar", "Triangle"], c: 0 },
+    { q: "A big group that sings together is a…", a: ["Band", "Choir", "Team", "Crowd"], c: 1 }
+  ];
+  var QZ_WORLD = [
+    { q: "The Eiffel Tower is in which country?", a: ["Italy", "France", "Spain", "Japan"], c: 1 },
+    { q: "Kangaroos live in…", a: ["Africa", "Australia", "Canada", "Brazil"], c: 1 },
+    { q: "The Great Pyramids are in…", a: ["Egypt", "Japan", "Brazil", "India"], c: 0 },
+    { q: "Which is the biggest continent?", a: ["Asia", "Europe", "Australia", "Antarctica"], c: 0 },
+    { q: "Pandas come from which country?", a: ["China", "Mexico", "France", "Kenya"], c: 0 },
+    { q: "The Statue of Liberty is in…", a: ["USA", "UK", "India", "Italy"], c: 0 }
+  ];
+  var QZ_SUPER = [
+    { q: "Which hero climbs walls and shoots webs?", a: ["Batman", "Spider-Man", "Hulk", "Flash"], c: 1 },
+    { q: "What color is the Hulk?", a: ["Blue", "Green", "Red", "Purple"], c: 1 },
+    { q: "Who is known as the 'Dark Knight'?", a: ["Superman", "Batman", "Flash", "Thor"], c: 1 },
+    { q: "Superman is famous for being able to…", a: ["Swim fast", "Fly", "Turn invisible", "Grow tall"], c: 1 },
+    { q: "The Flash is known for being…", a: ["Strong", "Super fast", "Invisible", "Tiny"], c: 1 },
+    { q: "A hero's hidden name is their…", a: ["Costume", "Secret identity", "Sidekick", "Gadget"], c: 1 }
+  ];
+  var QZ_HOLIDAY = [
+    { q: "Which holiday has jack-o'-lanterns?", a: ["Halloween", "Easter", "Christmas", "New Year"], c: 0 },
+    { q: "Who is said to bring presents at Christmas?", a: ["A fairy", "Santa Claus", "A wizard", "A knight"], c: 1 },
+    { q: "What do you hunt for at Easter?", a: ["Eggs", "Socks", "Shoes", "Books"], c: 0 },
+    { q: "On birthdays we blow out…", a: ["Bubbles", "Candles", "Balloons", "Whistles"], c: 1 },
+    { q: "On New Year's Eve we count down to…", a: ["Noon", "Midnight", "Sunrise", "Lunch"], c: 1 },
+    { q: "What lights up the sky on the Fourth of July?", a: ["Snow", "Fireworks", "Rainbows", "Kites"], c: 1 }
+  ];
 
   // --- Reveal / guess decks ---
   var RV_BRAINTEASERS = [
@@ -1966,7 +2030,43 @@ window.RoadTripGames = (function () {
         { q: "Who baked the gingerbread man?", a: ["A king", "An old woman", "A chef", "A child"], c: 1 },
         { q: "What did the gingerbread man say?", a: ["Hello!", "You can't catch me!", "I'm sleepy", "Good night"], c: 1 },
         { q: "Who finally caught him?", a: ["A dog", "A fox", "A cat", "A cow"], c: 1 },
-        { q: "How did the fox trick him?", a: ["With candy", "A ride across the river", "A song", "A nap"], c: 1 } ] }
+        { q: "How did the fox trick him?", a: ["With candy", "A ride across the river", "A song", "A nap"], c: 1 } ] },
+    { title: "The Ugly Duckling", emoji: "🦆", blurb: "A little duckling who grows up",
+      spotify: "The Ugly Duckling story for kids", questions: [
+        { q: "How did the other animals treat the ugly duckling?", a: ["They were kind", "They teased him", "They fed him", "They raced him"], c: 1 },
+        { q: "How did the duckling feel?", a: ["Happy", "Sad and lonely", "Angry", "Sleepy"], c: 1 },
+        { q: "What did the ugly duckling grow into?", a: ["A chicken", "A swan", "An eagle", "A goose"], c: 1 },
+        { q: "What is the lesson of the story?", a: ["Be mean", "Everyone can grow into something beautiful", "Never swim", "Stay small"], c: 1 } ] },
+    { title: "Cinderella", emoji: "👠", blurb: "A ball, a slipper & midnight",
+      spotify: "Cinderella story for kids", questions: [
+        { q: "Who did Cinderella live with?", a: ["Kind sisters", "A mean stepmother and stepsisters", "A king", "Her grandma"], c: 1 },
+        { q: "Who helped Cinderella go to the ball?", a: ["A fairy godmother", "A wizard", "A witch", "A prince"], c: 0 },
+        { q: "What did Cinderella lose at the ball?", a: ["A ring", "A glass slipper", "A crown", "Her cloak"], c: 1 },
+        { q: "When did she have to leave the ball?", a: ["Noon", "Midnight", "Sunrise", "Teatime"], c: 1 } ] },
+    { title: "The Boy Who Cried Wolf", emoji: "🐺", blurb: "A shepherd's big fib",
+      spotify: "The Boy Who Cried Wolf story for kids", questions: [
+        { q: "What animals did the boy watch?", a: ["Cows", "Sheep", "Chickens", "Goats"], c: 1 },
+        { q: "What did he shout as a joke?", a: ["Fire!", "Wolf!", "Help!", "Rain!"], c: 1 },
+        { q: "What happened when a real wolf came?", a: ["Everyone came", "Nobody believed him", "He flew away", "It rained"], c: 1 },
+        { q: "What is the lesson of the story?", a: ["Play tricks", "Always tell the truth", "Run fast", "Count sheep"], c: 1 } ] },
+    { title: "Snow White", emoji: "🍎", blurb: "Seven dwarfs & a magic mirror",
+      spotify: "Snow White story for kids", questions: [
+        { q: "How many dwarfs did Snow White live with?", a: ["Five", "Six", "Seven", "Eight"], c: 2 },
+        { q: "What poisoned fruit did the queen give her?", a: ["A pear", "An apple", "A grape", "A plum"], c: 1 },
+        { q: "Who woke Snow White up?", a: ["A prince", "A dwarf", "A bird", "The queen"], c: 0 },
+        { q: "Who was jealous of Snow White?", a: ["The prince", "The evil queen", "The dwarfs", "A bird"], c: 1 } ] },
+    { title: "The Lion and the Mouse", emoji: "🦁", blurb: "Even the small can help",
+      spotify: "The Lion and the Mouse story for kids", questions: [
+        { q: "What did the lion do to the mouse at first?", a: ["Ate him", "Caught him", "Ignored him", "Chased him"], c: 1 },
+        { q: "What did the mouse promise?", a: ["To be quiet", "To help the lion one day", "To leave forever", "To bring food"], c: 1 },
+        { q: "How did the mouse help the lion later?", a: ["Brought water", "Chewed through the net", "Roared loudly", "Ran for help"], c: 1 },
+        { q: "What is the lesson of the story?", a: ["Be the biggest", "Even the small can help the mighty", "Never nap", "Eat mice"], c: 1 } ] },
+    { title: "Hansel and Gretel", emoji: "🍬", blurb: "A candy house in the woods",
+      spotify: "Hansel and Gretel story for kids", questions: [
+        { q: "What did Hansel drop to find the way home?", a: ["Coins", "Breadcrumbs", "Toys", "Leaves"], c: 1 },
+        { q: "What was the witch's house made of?", a: ["Bricks", "Candy and cake", "Straw", "Ice"], c: 1 },
+        { q: "Who lived in the tasty house?", a: ["A fairy", "A witch", "A giant", "A bear"], c: 1 },
+        { q: "How did the story end for Hansel and Gretel?", a: ["They got lost forever", "They escaped and went home", "They stayed with the witch", "They flew away"], c: 1 } ] }
   ];
 
   function storyTimeGame(root, api) {
@@ -2146,6 +2246,22 @@ window.RoadTripGames = (function () {
       tagline: "Easy & fun for everyone", render: quizEngine(QZ_SILLY) },
     { id: "storyTime", title: "Story Time (Spotify)", emoji: "🎧", group: "Quizzes",
       tagline: "Listen to a story, then answer questions", render: storyTimeGame },
+    { id: "qzDino", title: "Dinosaur Quiz", emoji: "🦕", group: "Quizzes",
+      tagline: "Roar-some prehistoric trivia", render: quizEngine(QZ_DINO) },
+    { id: "qzOcean", title: "Ocean Quiz", emoji: "🌊", group: "Quizzes",
+      tagline: "Dive into sea creature facts", render: quizEngine(QZ_OCEAN) },
+    { id: "qzWeather", title: "Weather Quiz", emoji: "🌦️", group: "Quizzes",
+      tagline: "Rain, shine and rainbows", render: quizEngine(QZ_WEATHER) },
+    { id: "qzColors", title: "Colors & Shapes Quiz", emoji: "🎨", group: "Quizzes",
+      tagline: "Perfect for the littlest players", render: quizEngine(QZ_COLORS) },
+    { id: "qzMusic", title: "Music Quiz", emoji: "🎼", group: "Quizzes",
+      tagline: "Instruments, beats and songs", render: quizEngine(QZ_MUSIC) },
+    { id: "qzWorld", title: "Around the World Quiz", emoji: "🌍", group: "Quizzes",
+      tagline: "Countries and landmarks", render: quizEngine(QZ_WORLD) },
+    { id: "qzSuper", title: "Superhero Quiz", emoji: "🦸", group: "Quizzes",
+      tagline: "Test your super-knowledge", render: quizEngine(QZ_SUPER) },
+    { id: "qzHoliday", title: "Holidays Quiz", emoji: "🎉", group: "Quizzes",
+      tagline: "Celebrations all year round", render: quizEngine(QZ_HOLIDAY) },
 
     // ---- Spot & Race ----
     { id: "carBrands", title: "Car Brand Hunt", emoji: "🚗", group: "Spot & Race",
