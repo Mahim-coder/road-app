@@ -75,12 +75,31 @@
     <button type="button" id="overlayBack" class="overlay-back" aria-label="Back to games">← Back</button>
     <span id="overlayTitle" class="overlay-title"></span>
     <span class="overlay-spacer"></span>
+    <button type="button" id="overlayInfo" class="overlay-info" aria-label="How to play">ℹ️</button>
     <span class="stars-pill overlay-stars" id="overlayStarsPill">
       <span class="stars-icon">⭐</span>
       <span class="stars-number" id="overlayStarsNumber">0</span>
     </span>
   </div>
   <div id="overlayContent" class="overlay-content"></div>
+</div>
+
+<!-- How to play -->
+<div id="rulesModal" class="modal" hidden>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2 id="rulesTitle">How to play</h2>
+      <button type="button" id="rulesClose" class="modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="rules-section">
+      <h3>▶️ How to play</h3>
+      <p id="rulesHow"></p>
+    </div>
+    <div class="rules-section">
+      <h3>⭐ Scoring</h3>
+      <p id="rulesPoints"></p>
+    </div>
+  </div>
 </div>
 
 <!-- Players manager -->

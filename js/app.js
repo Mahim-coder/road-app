@@ -136,7 +136,14 @@
   var overlayBack = document.getElementById("overlayBack");
   var overlayTitle = document.getElementById("overlayTitle");
   var overlayContent = document.getElementById("overlayContent");
+  var overlayInfo = document.getElementById("overlayInfo");
   var confettiLayer = document.getElementById("confettiLayer");
+
+  var rulesModal = document.getElementById("rulesModal");
+  var rulesClose = document.getElementById("rulesClose");
+  var rulesTitle = document.getElementById("rulesTitle");
+  var rulesHow = document.getElementById("rulesHow");
+  var rulesPoints = document.getElementById("rulesPoints");
 
   var playersBtn = document.getElementById("playersBtn");
   var playersBtnCount = document.getElementById("playersBtnCount");
@@ -371,8 +378,10 @@
 
   // ---- game overlay ------------------------------------------------------
   var cleanupFns = [];
+  var activeGame = null;
 
   function openGame(game) {
+    activeGame = game;
     cleanupFns = [];
     overlayContent.innerHTML = "";
     overlayContent.className = "overlay-content accent-" + game.accent;
@@ -403,6 +412,22 @@
   }
 
   overlayBack.addEventListener("click", closeGame);
+
+  function openRules() {
+    if (!activeGame) return;
+    var r = activeGame.rules || {};
+    rulesTitle.textContent = activeGame.emoji + " " + activeGame.title;
+    rulesHow.textContent = r.how || "Just tap around and have fun!";
+    rulesPoints.textContent = r.points || "Play for fun — no points here.";
+    rulesModal.hidden = false;
+  }
+  function closeRules() { rulesModal.hidden = true; }
+
+  overlayInfo.addEventListener("click", openRules);
+  rulesClose.addEventListener("click", closeRules);
+  rulesModal.addEventListener("click", function (e) {
+    if (e.target === rulesModal) closeRules();
+  });
 
   // ---- stopped: activity list -------------------------------------------
   function renderActivities() {

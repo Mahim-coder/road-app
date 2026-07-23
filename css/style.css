@@ -427,6 +427,20 @@ main { max-width: 620px; margin: 0 auto; padding: 18px 16px calc(28px + var(--sa
   min-width: 0;
 }
 .overlay-spacer { flex: 1 1 auto; }
+.overlay-info {
+  flex: 0 0 auto;
+  border: none;
+  background: rgba(255, 255, 255, 0.22);
+  width: 34px; height: 34px;
+  border-radius: 999px;
+  font-size: 15px;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.rules-section { margin-top: 14px; }
+.rules-section h3 { margin: 0 0 5px; font-size: 14px; font-weight: 800; }
+.rules-section p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.45; }
 .overlay-content {
   flex: 1 1 auto;
   overflow-y: auto;

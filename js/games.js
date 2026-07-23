@@ -2317,6 +2317,84 @@ window.RoadTripGames = (function () {
   // Assign a rotating accent colour to every game.
   GAMES.forEach(function (g, idx) { if (!g.accent) g.accent = ACCENTS[idx % ACCENTS.length]; });
 
+  // ---- how-to-play + scoring for every game ------------------------------
+  function R(how, points) { return { how: how, points: points }; }
+
+  var RULE_QUIZ = R(
+    "Read each question aloud and tap the answer you think is right before the 20-second timer runs out.",
+    "Every correct answer scores ⭐1 for the team. Your total shows at the end — try to beat it next time!");
+  var RULE_REVEAL = R(
+    "Look at the clue and shout out your guesses together. Tap 'Reveal' to check the answer.",
+    "Tap 'We got it!' when you guess correctly to earn ⭐1.");
+  var RULE_TWOCHOICE = R(
+    "Read both options out loud — there's no wrong answer! Everyone picks a side, then tap your choice.",
+    "Whoever's turn it is earns ⭐1 for choosing. Add players (👥) to take turns and keep a leaderboard.");
+  var RULE_DECK = R(
+    "Read the card aloud and answer it or do what it says. Tap Next for a new one.",
+    "The player whose turn it is earns ⭐1 each card. Add players (👥) for a per-person score.");
+  var RULE_DECK_DO = R(
+    "Do what the card says all together, then tap Next for a new silly challenge.",
+    "The current player earns ⭐1 each turn. Add players (👥) to take turns.");
+  var RULE_TIMER = R(
+    "Tap start, then race to finish the challenge out loud before the timer hits zero.",
+    "Tap 'Done' when you pull it off to earn ⭐1 (it goes to the current player when you're taking turns).");
+  var RULE_TIMER_SPOT = R(
+    "Watch out the window and be the first to spot it before the timer runs out.",
+    "Tap 'Spotted it!' when you find it to earn ⭐1.");
+
+  var ID_RULES = {
+    truthDare: R("On your turn, tap Truth or Dare, then answer the question or do the dare.",
+      "Finish your Truth or Dare and tap 'Done!' to earn ⭐1 (goes to the current player)."),
+    mostLikely: R("Read the card, then on '1, 2, 3!' everyone points at the person it fits best.",
+      "Tap 'Next one' for a new card — each round adds ⭐1. The most-pointed-at person is the champ!"),
+    simon: R("Only do the action if the card starts with 'Simon says'. If it doesn't and you move — you're out!",
+      "Tap 'Next command' to keep going. Each round adds ⭐1."),
+    freeze: R("Dance while the music plays. The instant it stops, FREEZE! The last one still moving is out.",
+      "Just for laughs — no points, only bragging rights (and a confetti freeze)!"),
+    nameTune: R("Tap 'Play the tune' and listen. Shout out the song name, then tap Reveal to check.",
+      "Tap 'We got it!' when you name it correctly to earn ⭐1."),
+    storyTime: R("Pick a story and tap 'Listen on Spotify' to play it together. Then come back and tap 'Quiz us!'.",
+      "Each correct answer in the story quiz earns ⭐1 for the team."),
+    carBrands: R("Choose which car brands to hunt and (optionally) guess which you'll see most. Tap a brand each time you spot one on the road.",
+      "Guess the winning brand right to earn ⭐2, or ⭐1 just for playing. The most-spotted brand wins the round!"),
+    bingo: R("Watch out the window and tap each picture on the card as you spot it in real life.",
+      "Fill the whole card to shout BINGO and earn ⭐5!"),
+    alphabet: R("Find a word starting with each letter A–Z on signs, plates and shops — in order. Tap each letter as you spot it.",
+      "Complete all 26 letters to earn ⭐5!"),
+    iSpy: R("The app picks a secret colour. Be the first to spot something that colour out the window before time runs out.",
+      "Tap 'Found it!' when you spot it to earn ⭐1."),
+    categories: R("The app shows a random letter. Before the timer ends, everyone names a Name, Place, Animal, Thing and Food starting with it.",
+      "Beat the timer and tap 'New letter' to earn ⭐1 for the round."),
+    charades: R("One person acts out the secret word with NO talking, while everyone else guesses.",
+      "Tap 'Guessed it!' when someone gets it to earn ⭐2 (goes to the actor's turn)."),
+    sing: R("The app gives a secret word. Sing any song that includes that word!",
+      "Tap 'We sang it!' after your performance to earn ⭐2."),
+    spin: R("Tap Spin to randomly pick who goes next or who does the dare. Add players (👥) and it lands on a real name!",
+      "Each spin adds ⭐1."),
+    dice: R("Tap Roll to roll two dice — handy for any board-less game you make up.",
+      "Just a helper — no points."),
+    coin: R("Tap to flip the coin — heads or tails settles any argument!",
+      "Just a helper — no points."),
+    rps: R("On '3, 2, 1, Shoot!' everyone makes rock, paper or scissors against the app's throw.",
+      "Beat the app's throw to win the round — tap 'Play again' to add ⭐1."),
+    quiet: R("Pick a length, then everyone tries to stay completely silent. The last one to make a sound wins!",
+      "Make it to the end in total silence to earn ⭐3 for everyone."),
+    wyr: RULE_TWOCHOICE, thisOrThat: RULE_TWOCHOICE, superWyr: RULE_TWOCHOICE, foodWyr: RULE_TWOCHOICE,
+    faces: RULE_DECK_DO, impressions: RULE_DECK_DO,
+    name5: RULE_TIMER, tongue: RULE_TIMER, hum: RULE_TIMER, catRace: RULE_TIMER,
+    scavenger: RULE_TIMER_SPOT
+  };
+  var GROUP_RULES = {
+    "Quizzes": RULE_QUIZ,
+    "Guess & Reveal": RULE_REVEAL,
+    "Party & Laughs": RULE_DECK,
+    "Talk & Perform": RULE_DECK,
+    "Spot & Race": RULE_TIMER_SPOT
+  };
+  GAMES.forEach(function (g) {
+    g.rules = ID_RULES[g.id] || GROUP_RULES[g.group] || RULE_DECK;
+  });
+
   var byId = {};
   GAMES.forEach(function (g) { byId[g.id] = g; });
 
