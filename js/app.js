@@ -121,6 +121,7 @@
   var drivingView = document.getElementById("drivingView");
   var stoppedView = document.getElementById("stoppedView");
   var gameSpotlight = document.getElementById("gameSpotlight");
+  var categoryChips = document.getElementById("categoryChips");
   var activitiesList = document.getElementById("activitiesList");
   var rerollBtn = document.getElementById("rerollBtn");
   var celebrationEl = document.getElementById("celebration");
@@ -323,15 +324,40 @@
 
   // ---- driving: one game spotlight at a time -----------------------------
   var allGames = window.RoadTripGames.list();
+  var spotFilter = null; // group name, or null for "All"
   var spotOrder = shuffle(allGames);
   var spotIdx = 0;
 
+  function filteredGames() {
+    return spotFilter ? allGames.filter(function (g) { return g.group === spotFilter; }) : allGames;
+  }
+  function rebuildOrder() { spotOrder = shuffle(filteredGames()); spotIdx = 0; }
   function spotlightGame() { return spotOrder[spotIdx]; }
 
   function nextSpotlight() {
     spotIdx += 1;
-    if (spotIdx >= spotOrder.length) { spotOrder = shuffle(allGames); spotIdx = 0; }
+    if (spotIdx >= spotOrder.length) rebuildOrder();
     renderSpotlight();
+  }
+
+  function renderCategoryChips() {
+    categoryChips.innerHTML = "";
+    var groups = [];
+    allGames.forEach(function (g) { if (g.group && groups.indexOf(g.group) === -1) groups.push(g.group); });
+    var options = [{ key: null, label: "🎲 All" }].concat(groups.map(function (g) { return { key: g, label: g }; }));
+    options.forEach(function (opt) {
+      var chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "cat-chip" + (spotFilter === opt.key ? " cat-chip-on" : "");
+      chip.textContent = opt.label;
+      chip.addEventListener("click", function () {
+        spotFilter = opt.key;
+        rebuildOrder();
+        renderCategoryChips();
+        renderSpotlight();
+      });
+      categoryChips.appendChild(chip);
+    });
   }
 
   function renderSpotlight() {
@@ -594,6 +620,7 @@
   // ---- init --------------------------------------------------------------
   renderStars();
   renderPlayersCount();
+  renderCategoryChips();
   renderSpotlight();
   renderStopped();
   renderTabs();

@@ -212,6 +212,32 @@ body.overlay-open { overflow: hidden; }
 main { max-width: 620px; margin: 0 auto; padding: 18px 16px calc(28px + var(--safe-bottom)); }
 .view-lead { color: var(--muted); font-size: 14px; margin: 0 0 14px; }
 
+/* ---------------- Category chips ---------------- */
+.cat-chips {
+  display: flex; gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 14px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.cat-chips::-webkit-scrollbar { display: none; }
+.cat-chip {
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 13px; font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.cat-chip-on {
+  background: linear-gradient(135deg, var(--brand), var(--brand-2));
+  color: #fff; border-color: transparent;
+}
+
 /* ---------------- Game spotlight (one at a time) ---------------- */
 .spotlight { display: flex; flex-direction: column; }
 .spotlight-card {
