@@ -267,11 +267,25 @@ window.RoadTripGames = (function () {
     { q: "Which fruit is yellow and curved?", a: ["Apple", "Banana", "Grape", "Cherry"], c: 1 },
     { q: "How many days are in a week?", a: ["5", "6", "7", "8"], c: 2 },
     { q: "What do you call frozen rain?", a: ["Hail", "Fog", "Dew", "Mist"], c: 0 },
-    { q: "Which animal says 'moo'?", a: ["Sheep", "Cow", "Goat", "Pig"], c: 1 }
+    { q: "Which animal says 'moo'?", a: ["Sheep", "Cow", "Goat", "Pig"], c: 1 },
+    { q: "How many wheels does a car usually have?", a: ["2", "3", "4", "6"], c: 2 },
+    { q: "What color is a banana?", a: ["Red", "Yellow", "Blue", "Green"], c: 1 },
+    { q: "Which season comes after winter?", a: ["Summer", "Autumn", "Spring", "Fall"], c: 2 },
+    { q: "What do cows give us to drink?", a: ["Juice", "Milk", "Water", "Soda"], c: 1 },
+    { q: "How many legs does a dog have?", a: ["2", "4", "6", "8"], c: 1 },
+    { q: "What do you call a house for a bird?", a: ["Kennel", "Nest", "Barn", "Den"], c: 1 },
+    { q: "Which is bigger?", a: ["An ant", "An elephant", "A mouse", "A bee"], c: 1 },
+    { q: "What do we breathe to stay alive?", a: ["Water", "Air", "Sand", "Fire"], c: 1 },
+    { q: "How many months are in a year?", a: ["10", "11", "12", "13"], c: 2 },
+    { q: "What do plants need to grow?", a: ["Candy", "Sunlight and water", "Toys", "Music"], c: 1 },
+    { q: "Which animal has a long neck?", a: ["Giraffe", "Pig", "Duck", "Frog"], c: 0 },
+    { q: "What color do you get mixing red and white?", a: ["Pink", "Blue", "Green", "Brown"], c: 0 },
+    { q: "Where do fish live?", a: ["In trees", "In water", "In the sky", "Underground"], c: 1 },
+    { q: "What is the opposite of hot?", a: ["Warm", "Cold", "Big", "Fast"], c: 1 }
   ];
 
   function quizGame(root, api) {
-    var questions = shuffle(QUIZ).slice(0, 6);
+    var questions = shuffle(QUIZ).slice(0, 20);
     var idx = 0;
     var score = 0;
     var timer = null;
@@ -348,7 +362,7 @@ window.RoadTripGames = (function () {
       var again = el("button", "game-cta", "Play again 🔁");
       again.type = "button";
       again.addEventListener("click", function () {
-        questions = shuffle(QUIZ).slice(0, 6);
+        questions = shuffle(QUIZ).slice(0, 20);
         idx = 0; score = 0;
         renderQuestion();
       });
@@ -1043,7 +1057,7 @@ window.RoadTripGames = (function () {
 
   // Multiple-choice quiz with a per-question timer + score.
   function quizEngine(bank, pickCount) {
-    var take = pickCount || 6;
+    var take = pickCount || 20;
     return function (root, api) {
       var questions = shuffle(bank).slice(0, Math.min(take, bank.length));
       var idx = 0, score = 0, timer = null;
@@ -1260,7 +1274,19 @@ window.RoadTripGames = (function () {
     { q: "Which animal can change its color?", a: ["Chameleon", "Zebra", "Panda", "Wolf"], c: 0 },
     { q: "What is the largest animal on Earth?", a: ["Elephant", "Blue whale", "Giraffe", "Shark"], c: 1 },
     { q: "Which bird cannot fly?", a: ["Eagle", "Sparrow", "Penguin", "Parrot"], c: 2 },
-    { q: "How many hearts does an octopus have?", a: ["1", "2", "3", "5"], c: 2 }
+    { q: "How many hearts does an octopus have?", a: ["1", "2", "3", "5"], c: 2 },
+    { q: "What do you call a group of wolves?", a: ["A pack", "A herd", "A flock", "A school"], c: 0 },
+    { q: "What do caterpillars turn into?", a: ["Butterflies", "Bees", "Birds", "Bats"], c: 0 },
+    { q: "What do you call a baby cat?", a: ["Puppy", "Kitten", "Cub", "Foal"], c: 1 },
+    { q: "Which animal sleeps hanging upside down?", a: ["Bat", "Owl", "Cat", "Dog"], c: 0 },
+    { q: "What is a group of fish called?", a: ["A school", "A pack", "A herd", "A flock"], c: 0 },
+    { q: "Which animal has black and white stripes?", a: ["Zebra", "Lion", "Bear", "Fox"], c: 0 },
+    { q: "What do bees live in?", a: ["A hive", "A nest", "A den", "A web"], c: 0 },
+    { q: "What covers a fish's body?", a: ["Fur", "Scales", "Feathers", "Wool"], c: 1 },
+    { q: "Which animal is famous for its long trunk?", a: ["Elephant", "Horse", "Lion", "Bear"], c: 0 },
+    { q: "What do you call a baby sheep?", a: ["Lamb", "Calf", "Foal", "Chick"], c: 0 },
+    { q: "Which animal builds dams in rivers?", a: ["Beaver", "Shark", "Eagle", "Snake"], c: 0 },
+    { q: "What sound does a dog make?", a: ["Woof", "Moo", "Oink", "Baa"], c: 0 }
   ];
   var QZ_SPACE = [
     { q: "Which planet is closest to the Sun?", a: ["Earth", "Mercury", "Mars", "Venus"], c: 1 },
@@ -1269,7 +1295,20 @@ window.RoadTripGames = (function () {
     { q: "What is the name of our galaxy?", a: ["Andromeda", "Milky Way", "Big Dipper", "Orion"], c: 1 },
     { q: "Who was the first to walk on the Moon?", a: ["Neil Armstrong", "Buzz Lightyear", "Yuri Gagarin", "Elon Musk"], c: 0 },
     { q: "What star is at the center of our solar system?", a: ["The Moon", "The Sun", "Mars", "Polaris"], c: 1 },
-    { q: "Which planet is called the Red Planet?", a: ["Jupiter", "Mars", "Neptune", "Venus"], c: 1 }
+    { q: "Which planet is called the Red Planet?", a: ["Jupiter", "Mars", "Neptune", "Venus"], c: 1 },
+    { q: "How many planets are in our solar system?", a: ["7", "8", "9", "10"], c: 1 },
+    { q: "What do astronauts wear in space?", a: ["Pajamas", "A spacesuit", "A swimsuit", "A raincoat"], c: 1 },
+    { q: "What takes astronauts up to space?", a: ["A rocket", "A car", "A boat", "A train"], c: 0 },
+    { q: "Which planet is the biggest?", a: ["Jupiter", "Earth", "Mars", "Mercury"], c: 0 },
+    { q: "What lights up the night sky?", a: ["Stars", "Clouds", "Rain", "Wind"], c: 0 },
+    { q: "What pulls things down toward a planet?", a: ["Gravity", "Wind", "Magnets", "Water"], c: 0 },
+    { q: "Which planet do we live on?", a: ["Earth", "Venus", "Saturn", "Neptune"], c: 0 },
+    { q: "Is there air to breathe in outer space?", a: ["Yes", "No", "Only at night", "Only on Mars"], c: 1 },
+    { q: "What do we call a group of stars making a picture?", a: ["A constellation", "A comet", "A moon", "A cloud"], c: 0 },
+    { q: "What orbits around the Earth?", a: ["The Moon", "The Sun", "Mars", "Jupiter"], c: 0 },
+    { q: "What color is the Sun's light?", a: ["White/yellow", "Green", "Blue", "Purple"], c: 0 },
+    { q: "What are space rocks that land on Earth called?", a: ["Meteorites", "Planets", "Stars", "Suns"], c: 0 },
+    { q: "How does the Moon look different through the month?", a: ["It changes shape (phases)", "It changes color", "It disappears forever", "It gets hot"], c: 0 }
   ];
   var QZ_GEO = [
     { q: "Which is the largest ocean?", a: ["Atlantic", "Indian", "Pacific", "Arctic"], c: 2 },
@@ -1278,7 +1317,20 @@ window.RoadTripGames = (function () {
     { q: "What is the tallest mountain?", a: ["K2", "Everest", "Kilimanjaro", "Alps"], c: 1 },
     { q: "Which desert is the biggest?", a: ["Sahara", "Gobi", "Mojave", "Arctic"], c: 0 },
     { q: "Which river is the longest?", a: ["Amazon", "Nile", "Yangtze", "Danube"], c: 1 },
-    { q: "What color are most stop signs?", a: ["Green", "Blue", "Red", "Yellow"], c: 2 }
+    { q: "What color are most stop signs?", a: ["Green", "Blue", "Red", "Yellow"], c: 2 },
+    { q: "What is the coldest continent?", a: ["Antarctica", "Africa", "Asia", "Europe"], c: 0 },
+    { q: "What do we call a very large body of salt water?", a: ["An ocean", "A lake", "A pond", "A river"], c: 0 },
+    { q: "What is a big area of sand called?", a: ["A desert", "A forest", "A jungle", "A meadow"], c: 0 },
+    { q: "Which direction does the Sun rise?", a: ["East", "West", "North", "South"], c: 0 },
+    { q: "Which is the smallest continent?", a: ["Australia", "Asia", "Africa", "Europe"], c: 0 },
+    { q: "What do you use to find your way on a trip?", a: ["A map", "A spoon", "A pillow", "A hat"], c: 0 },
+    { q: "What is the very top of a mountain called?", a: ["The peak", "The base", "The valley", "The cave"], c: 0 },
+    { q: "What do we call land with water all around it?", a: ["An island", "A hill", "A cave", "A field"], c: 0 },
+    { q: "What tool points to the north?", a: ["A compass", "A ruler", "A clock", "A cup"], c: 0 },
+    { q: "Which is hotter, the North Pole or the equator?", a: ["The equator", "The North Pole", "They're the same", "Neither"], c: 0 },
+    { q: "What do we call a stream of water that flows to the sea?", a: ["A river", "A mountain", "A forest", "A desert"], c: 0 },
+    { q: "Which planet do all these places sit on?", a: ["Earth", "Mars", "The Moon", "Venus"], c: 0 },
+    { q: "What is a very tall pile of rock and earth called?", a: ["A mountain", "A puddle", "A field", "A road"], c: 0 }
   ];
   var QZ_SCIENCE = [
     { q: "What do plants breathe in?", a: ["Oxygen", "Carbon dioxide", "Helium", "Water"], c: 1 },
@@ -1287,7 +1339,20 @@ window.RoadTripGames = (function () {
     { q: "How many bones does an adult have?", a: ["106", "206", "306", "406"], c: 1 },
     { q: "What do bees collect from flowers?", a: ["Water", "Nectar", "Sand", "Leaves"], c: 1 },
     { q: "What state is ice?", a: ["Liquid", "Gas", "Solid", "Plasma"], c: 2 },
-    { q: "What gives plants their green color?", a: ["Chlorophyll", "Sunlight", "Soil", "Water"], c: 0 }
+    { q: "What gives plants their green color?", a: ["Chlorophyll", "Sunlight", "Soil", "Water"], c: 0 },
+    { q: "What happens to water when it gets very cold?", a: ["It freezes", "It boils", "It disappears", "It burns"], c: 0 },
+    { q: "What do our lungs help us do?", a: ["Breathe", "Think", "Walk", "Hear"], c: 0 },
+    { q: "What is a magnet attracted to?", a: ["Metal", "Wood", "Paper", "Water"], c: 0 },
+    { q: "What do we call animals that eat only plants?", a: ["Herbivores", "Carnivores", "Robots", "Fish"], c: 0 },
+    { q: "What makes a shadow?", a: ["Light being blocked", "Water", "Wind", "Sound"], c: 0 },
+    { q: "How many legs does an insect have?", a: ["6", "4", "8", "2"], c: 0 },
+    { q: "What do plants make using sunlight?", a: ["Food", "Rocks", "Metal", "Rain"], c: 0 },
+    { q: "What is the Sun mostly made of?", a: ["Hot gas", "Ice", "Rock", "Water"], c: 0 },
+    { q: "What do we call baby frogs?", a: ["Tadpoles", "Kittens", "Cubs", "Chicks"], c: 0 },
+    { q: "What pushes a sailboat along?", a: ["Wind", "Fire", "Ice", "Sand"], c: 0 },
+    { q: "What tool measures temperature?", a: ["A thermometer", "A ruler", "A scale", "A clock"], c: 0 },
+    { q: "What happens to water when it boils?", a: ["It turns to steam", "It freezes", "It turns to ice", "It vanishes"], c: 0 },
+    { q: "Which of these is a source of light?", a: ["The Sun", "A rock", "A pillow", "A shoe"], c: 0 }
   ];
   var QZ_FOOD = [
     { q: "Which fruit keeps the doctor away?", a: ["Banana", "Apple", "Orange", "Grape"], c: 1 },
@@ -1296,7 +1361,20 @@ window.RoadTripGames = (function () {
     { q: "What vegetable makes you cry?", a: ["Carrot", "Onion", "Potato", "Pea"], c: 1 },
     { q: "Which is a citrus fruit?", a: ["Lemon", "Apple", "Banana", "Cherry"], c: 0 },
     { q: "What is popcorn made from?", a: ["Wheat", "Corn", "Rice", "Oats"], c: 1 },
-    { q: "Which dessert is frozen?", a: ["Cake", "Ice cream", "Pie", "Cookie"], c: 1 }
+    { q: "Which dessert is frozen?", a: ["Cake", "Ice cream", "Pie", "Cookie"], c: 1 },
+    { q: "Which meal do we eat in the morning?", a: ["Breakfast", "Dinner", "Supper", "Lunch"], c: 0 },
+    { q: "What is cheese made from?", a: ["Milk", "Water", "Flour", "Sugar"], c: 0 },
+    { q: "Which of these is a vegetable?", a: ["Carrot", "Apple", "Banana", "Cherry"], c: 0 },
+    { q: "Which drink comes from oranges?", a: ["Orange juice", "Milk", "Tea", "Cola"], c: 0 },
+    { q: "What do bees make that we can eat?", a: ["Honey", "Jam", "Butter", "Syrup"], c: 0 },
+    { q: "Which is a healthy snack?", a: ["An apple", "Candy", "Chips", "Soda"], c: 0 },
+    { q: "What do we call bread with fillings inside?", a: ["A sandwich", "A pie", "A cake", "A soup"], c: 0 },
+    { q: "What color is a ripe tomato?", a: ["Red", "Blue", "Purple", "Black"], c: 0 },
+    { q: "Which food is spicy?", a: ["A chili pepper", "A banana", "An apple", "Bread"], c: 0 },
+    { q: "Where do we keep ice cream frozen?", a: ["A freezer", "An oven", "A cupboard", "A sink"], c: 0 },
+    { q: "Which is a breakfast cereal?", a: ["Oats", "Steak", "Pizza", "Fries"], c: 0 },
+    { q: "Which of these grows underground?", a: ["Potato", "Apple", "Grape", "Banana"], c: 0 },
+    { q: "What do you call food that is good for you?", a: ["Healthy", "Sour", "Frozen", "Loud"], c: 0 }
   ];
   var QZ_MOVIES = [
     { q: "In Frozen, who has ice powers?", a: ["Anna", "Elsa", "Olaf", "Kristoff"], c: 1 },
@@ -1305,7 +1383,20 @@ window.RoadTripGames = (function () {
     { q: "What animal is Simba in The Lion King?", a: ["Tiger", "Lion", "Leopard", "Cheetah"], c: 1 },
     { q: "In Moana, who is the demigod?", a: ["Maui", "Pua", "Hei Hei", "Tui"], c: 0 },
     { q: "What color is Shrek?", a: ["Blue", "Green", "Purple", "Brown"], c: 1 },
-    { q: "In Cars, what is Lightning McQueen?", a: ["A truck", "A race car", "A plane", "A boat"], c: 1 }
+    { q: "In Cars, what is Lightning McQueen?", a: ["A truck", "A race car", "A plane", "A boat"], c: 1 },
+    { q: "In Frozen, who is Elsa's sister?", a: ["Anna", "Moana", "Belle", "Ariel"], c: 0 },
+    { q: "What kind of animal is Dumbo?", a: ["An elephant", "A dog", "A mouse", "A bear"], c: 0 },
+    { q: "In The Jungle Book, what animal is Baloo?", a: ["A bear", "A tiger", "A snake", "A wolf"], c: 0 },
+    { q: "What color is the genie in Aladdin?", a: ["Blue", "Green", "Red", "Yellow"], c: 0 },
+    { q: "In Finding Nemo, what animal is Dory?", a: ["A fish", "A crab", "A shark", "A turtle"], c: 0 },
+    { q: "Who is Woody's space-ranger friend?", a: ["Buzz Lightyear", "Rex", "Slinky", "Hamm"], c: 0 },
+    { q: "What animal is Timon in The Lion King?", a: ["A meerkat", "A lion", "A warthog", "A bird"], c: 0 },
+    { q: "In Encanto, what is the family's name?", a: ["Madrigal", "Smith", "Parr", "Incredible"], c: 0 },
+    { q: "What is Peter Pan's magical home called?", a: ["Neverland", "Wonderland", "Narnia", "Oz"], c: 0 },
+    { q: "Who is the friendly snowman in Frozen?", a: ["Olaf", "Sven", "Kristoff", "Hans"], c: 0 },
+    { q: "In Ratatouille, what animal loves to cook?", a: ["A rat", "A cat", "A dog", "A pig"], c: 0 },
+    { q: "What kind of toy is Rex in Toy Story?", a: ["A dinosaur", "A car", "A robot", "A doll"], c: 0 },
+    { q: "In Moana, what animal is Heihei?", a: ["A rooster", "A pig", "A dog", "A cat"], c: 0 }
   ];
   var QZ_SPORTS = [
     { q: "How many players on a soccer team on the field?", a: ["9", "10", "11", "12"], c: 2 },
@@ -1313,7 +1404,21 @@ window.RoadTripGames = (function () {
     { q: "What sport uses a racket and a net?", a: ["Golf", "Tennis", "Boxing", "Rowing"], c: 1 },
     { q: "How many rings are on the Olympic flag?", a: ["4", "5", "6", "7"], c: 1 },
     { q: "In which sport do you hit a home run?", a: ["Cricket", "Baseball", "Hockey", "Rugby"], c: 1 },
-    { q: "What do swimmers swim in?", a: ["A court", "A pool", "A track", "A ring"], c: 1 }
+    { q: "What do swimmers swim in?", a: ["A court", "A pool", "A track", "A ring"], c: 1 },
+    { q: "How many players on a basketball team on court?", a: ["5", "7", "9", "11"], c: 0 },
+    { q: "What do you kick in soccer?", a: ["A ball", "A puck", "A bat", "A racket"], c: 0 },
+    { q: "What sport is played on ice with a puck?", a: ["Ice hockey", "Soccer", "Tennis", "Golf"], c: 0 },
+    { q: "What do you ride in cycling?", a: ["A bicycle", "A horse", "A boat", "A car"], c: 0 },
+    { q: "How many bases are there in baseball?", a: ["4", "3", "5", "6"], c: 0 },
+    { q: "What do boxers wear on their hands?", a: ["Gloves", "Skates", "Helmets", "Rackets"], c: 0 },
+    { q: "What sport uses clubs to hit a ball into holes?", a: ["Golf", "Rugby", "Boxing", "Hockey"], c: 0 },
+    { q: "What do you wear on your feet to ice skate?", a: ["Skates", "Boots", "Sandals", "Flippers"], c: 0 },
+    { q: "Which sport has touchdowns?", a: ["American football", "Tennis", "Golf", "Swimming"], c: 0 },
+    { q: "What do runners run on at a stadium?", a: ["A track", "A pool", "A court", "A rink"], c: 0 },
+    { q: "What do gymnasts do?", a: ["Flips and tumbles", "Drive cars", "Fly planes", "Cook food"], c: 0 },
+    { q: "In tennis, what do you hit the ball over?", a: ["A net", "A wall", "A goal", "A hoop"], c: 0 },
+    { q: "What do you shoot a basketball into?", a: ["A hoop", "A net on the ground", "A hole", "A goal post"], c: 0 },
+    { q: "How many teams play in a normal soccer match?", a: ["2", "1", "3", "4"], c: 0 }
   ];
   var QZ_BODY = [
     { q: "Which organ pumps blood?", a: ["Brain", "Heart", "Lungs", "Liver"], c: 1 },
@@ -1321,7 +1426,21 @@ window.RoadTripGames = (function () {
     { q: "What do we use to smell?", a: ["Ears", "Nose", "Eyes", "Tongue"], c: 1 },
     { q: "Which part helps us think?", a: ["Heart", "Brain", "Stomach", "Feet"], c: 1 },
     { q: "How many fingers on two hands?", a: ["8", "10", "12", "5"], c: 1 },
-    { q: "What covers and protects your body?", a: ["Bones", "Skin", "Hair", "Blood"], c: 1 }
+    { q: "What covers and protects your body?", a: ["Bones", "Skin", "Hair", "Blood"], c: 1 },
+    { q: "What do we hear with?", a: ["Ears", "Eyes", "Nose", "Hands"], c: 0 },
+    { q: "What do we see with?", a: ["Eyes", "Ears", "Feet", "Elbows"], c: 0 },
+    { q: "How many eyes do people have?", a: ["2", "1", "3", "4"], c: 0 },
+    { q: "What do we taste with?", a: ["Our tongue", "Our nose", "Our ears", "Our hair"], c: 0 },
+    { q: "What protects your brain?", a: ["Your skull", "Your ribs", "Your knees", "Your toes"], c: 0 },
+    { q: "What do you use to walk?", a: ["Legs", "Arms", "Ears", "Eyes"], c: 0 },
+    { q: "What grows on top of your head?", a: ["Hair", "Feathers", "Scales", "Leaves"], c: 0 },
+    { q: "How many lungs do you have?", a: ["2", "1", "3", "4"], c: 0 },
+    { q: "What joint helps you bend your arm?", a: ["Your elbow", "Your nose", "Your ear", "Your hair"], c: 0 },
+    { q: "What do your teeth help you do?", a: ["Chew", "See", "Hear", "Smell"], c: 0 },
+    { q: "What is the largest organ that covers you?", a: ["Skin", "Heart", "Brain", "Liver"], c: 0 },
+    { q: "What do you use to hold things?", a: ["Hands", "Feet", "Ears", "Nose"], c: 0 },
+    { q: "What color is your blood?", a: ["Red", "Blue", "Green", "Yellow"], c: 0 },
+    { q: "What do your legs bend at?", a: ["The knees", "The nose", "The ears", "The hair"], c: 0 }
   ];
   var QZ_SILLY = [
     { q: "What sound does a cow make?", a: ["Woof", "Moo", "Meow", "Quack"], c: 1 },
@@ -1329,7 +1448,21 @@ window.RoadTripGames = (function () {
     { q: "How many days in a leap year?", a: ["365", "366", "364", "367"], c: 1 },
     { q: "What color do you get mixing blue and yellow?", a: ["Green", "Purple", "Orange", "Pink"], c: 0 },
     { q: "What melts in the sun?", a: ["A rock", "Ice cream", "A spoon", "A cup"], c: 1 },
-    { q: "Which is heaviest?", a: ["A feather", "A brick", "A leaf", "A balloon"], c: 1 }
+    { q: "Which is heaviest?", a: ["A feather", "A brick", "A leaf", "A balloon"], c: 1 },
+    { q: "What do you call a bear with no teeth?", a: ["A gummy bear", "A grizzly", "A panda", "A cub"], c: 0 },
+    { q: "How many months have 28 days?", a: ["All of them", "One", "Two", "Six"], c: 0 },
+    { q: "What has a face and two hands but no arms?", a: ["A clock", "A dog", "A robot", "A book"], c: 0 },
+    { q: "What gets bigger the more you take away?", a: ["A hole", "A ball", "A box", "A cup"], c: 0 },
+    { q: "What do you call cheese that isn't yours?", a: ["Nacho cheese", "Blue cheese", "Swiss", "Cheddar"], c: 0 },
+    { q: "Which weighs more: a pound of feathers or a pound of bricks?", a: ["They weigh the same", "Feathers", "Bricks", "Neither"], c: 0 },
+    { q: "What has to be broken before you can use it?", a: ["An egg", "A cup", "A phone", "A toy"], c: 0 },
+    { q: "What building has the most stories?", a: ["A library", "A house", "A shed", "A tent"], c: 0 },
+    { q: "What kind of room has no doors or windows?", a: ["A mushroom", "A bedroom", "A bathroom", "A classroom"], c: 0 },
+    { q: "What can you catch but never throw?", a: ["A cold", "A ball", "A frisbee", "A fish"], c: 0 },
+    { q: "What has one eye but cannot see?", a: ["A needle", "A cat", "A person", "An owl"], c: 0 },
+    { q: "Why did the cookie go to the doctor?", a: ["It felt crumby", "It was tired", "It was cold", "It was late"], c: 0 },
+    { q: "What is full of holes but still holds water?", a: ["A sponge", "A cup", "A bottle", "A bowl"], c: 0 },
+    { q: "What goes up but never comes back down?", a: ["Your age", "A ball", "A yo-yo", "A kite"], c: 0 }
   ];
   var QZ_DINO = [
     { q: "Which dinosaur was a huge meat-eater?", a: ["Stegosaurus", "T-Rex", "Triceratops", "Brontosaurus"], c: 1 },
@@ -1337,7 +1470,21 @@ window.RoadTripGames = (function () {
     { q: "How do we learn about dinosaurs today?", a: ["Photos", "Fossils", "Videos", "Letters"], c: 1 },
     { q: "Which dinosaur had three horns?", a: ["T-Rex", "Triceratops", "Raptor", "Stegosaurus"], c: 1 },
     { q: "When did dinosaurs live?", a: ["Last year", "Millions of years ago", "Next year", "Yesterday"], c: 1 },
-    { q: "Which flying reptile lived with dinosaurs?", a: ["Pterodactyl", "Eagle", "Bat", "Parrot"], c: 0 }
+    { q: "Which flying reptile lived with dinosaurs?", a: ["Pterodactyl", "Eagle", "Bat", "Parrot"], c: 0 },
+    { q: "What does the word 'dinosaur' mean?", a: ["Terrible lizard", "Big bird", "Fast runner", "Old fish"], c: 0 },
+    { q: "Which dinosaur had a very long neck?", a: ["Brachiosaurus", "T-Rex", "Velociraptor", "Triceratops"], c: 0 },
+    { q: "Did dinosaurs lay eggs?", a: ["Yes", "No", "Never", "Only fish did"], c: 0 },
+    { q: "What are dino bones we dig up called?", a: ["Fossils", "Rocks", "Seeds", "Shells"], c: 0 },
+    { q: "Which dinosaur had plates along its back?", a: ["Stegosaurus", "T-Rex", "Pterodactyl", "Raptor"], c: 0 },
+    { q: "Are any dinosaurs alive today?", a: ["No", "Yes", "Only in zoos", "Only in the sea"], c: 0 },
+    { q: "What scientist studies dinosaurs?", a: ["A paleontologist", "A dentist", "A pilot", "A chef"], c: 0 },
+    { q: "Which small dinosaur hunted in packs?", a: ["Velociraptor", "Brachiosaurus", "Stegosaurus", "Triceratops"], c: 0 },
+    { q: "What did T-Rex have that were very small?", a: ["Its arms", "Its legs", "Its teeth", "Its eyes"], c: 0 },
+    { q: "Where can you see dinosaur skeletons?", a: ["In a museum", "In the ocean", "In space", "At the beach"], c: 0 },
+    { q: "Did some dinosaurs have feathers?", a: ["Yes", "No", "Never", "Only birds did"], c: 0 },
+    { q: "What might a plant-eating dino eat?", a: ["Leaves", "Meat", "Rocks", "Metal"], c: 0 },
+    { q: "A very long time ago is called…", a: ["Prehistoric times", "Next week", "Tomorrow", "Today"], c: 0 },
+    { q: "Which is bigger, a T-Rex or a house cat?", a: ["A T-Rex", "A house cat", "The same", "A mouse"], c: 0 }
   ];
   var QZ_OCEAN = [
     { q: "What is the largest animal in the ocean?", a: ["Shark", "Blue whale", "Octopus", "Dolphin"], c: 1 },
@@ -1345,7 +1492,21 @@ window.RoadTripGames = (function () {
     { q: "Which fish is orange with white stripes?", a: ["Clownfish", "Tuna", "Shark", "Eel"], c: 0 },
     { q: "Which way does a crab usually walk?", a: ["Backwards", "Sideways", "Only up", "It hops"], c: 1 },
     { q: "What do dolphins breathe?", a: ["Water", "Air", "Sand", "Bubbles"], c: 1 },
-    { q: "Which sea creature can squirt ink?", a: ["Octopus", "Dolphin", "Whale", "Crab"], c: 0 }
+    { q: "Which sea creature can squirt ink?", a: ["Octopus", "Dolphin", "Whale", "Crab"], c: 0 },
+    { q: "Is ocean water salty or sweet?", a: ["Salty", "Sweet", "Sour", "Spicy"], c: 0 },
+    { q: "Which big fish has sharp teeth and a fin?", a: ["A shark", "A goldfish", "A clownfish", "A seahorse"], c: 0 },
+    { q: "Which sea animal is a mammal?", a: ["A dolphin", "A tuna", "A crab", "A shrimp"], c: 0 },
+    { q: "What do sea turtles carry on their backs?", a: ["A shell", "Fur", "Feathers", "Wings"], c: 0 },
+    { q: "What do fish use to breathe underwater?", a: ["Gills", "Lungs", "Noses", "Ears"], c: 0 },
+    { q: "Which animal has eight arms?", a: ["An octopus", "A fish", "A crab", "A whale"], c: 0 },
+    { q: "What shiny treasure can form inside an oyster?", a: ["A pearl", "A diamond", "A coin", "A rock"], c: 0 },
+    { q: "Which sea creature looks like a star?", a: ["A starfish", "A jellyfish", "A shark", "An eel"], c: 0 },
+    { q: "What do whales spray from their blowholes?", a: ["Water and air", "Fire", "Sand", "Milk"], c: 0 },
+    { q: "Do crabs have a hard shell?", a: ["Yes", "No", "Only babies", "Only at night"], c: 0 },
+    { q: "Which is the biggest ocean?", a: ["The Pacific", "The Atlantic", "The Indian", "The Arctic"], c: 0 },
+    { q: "What colorful underwater structure do fish live around?", a: ["Coral reef", "A forest", "A desert", "A cave of ice"], c: 0 },
+    { q: "What do we call a baby fish?", a: ["A fry", "A cub", "A chick", "A joey"], c: 0 },
+    { q: "Which sea animal can change color to hide?", a: ["An octopus", "A whale", "A crab", "A starfish"], c: 0 }
   ];
   var QZ_WEATHER = [
     { q: "What falls from clouds as rain?", a: ["Water", "Sand", "Juice", "Milk"], c: 0 },
@@ -1353,7 +1514,21 @@ window.RoadTripGames = (function () {
     { q: "What is frozen rain called?", a: ["Hail", "Fog", "Dew", "Mist"], c: 0 },
     { q: "What makes a loud boom in a storm?", a: ["Thunder", "Wind", "Rain", "Clouds"], c: 0 },
     { q: "What do we use to stay dry in the rain?", a: ["Sunglasses", "An umbrella", "A fan", "A hat"], c: 1 },
-    { q: "Snow is usually…", a: ["Hot", "Cold", "Spicy", "Sticky"], c: 1 }
+    { q: "Snow is usually…", a: ["Hot", "Cold", "Spicy", "Sticky"], c: 1 },
+    { q: "What do we call a big storm with spinning wind?", a: ["A tornado", "A rainbow", "A sunbeam", "A puddle"], c: 0 },
+    { q: "What is a cloud made of?", a: ["Tiny water drops", "Cotton", "Smoke", "Sugar"], c: 0 },
+    { q: "Which season is usually the coldest?", a: ["Winter", "Summer", "Spring", "Autumn"], c: 0 },
+    { q: "What bright flash comes before thunder?", a: ["Lightning", "Rain", "Snow", "Fog"], c: 0 },
+    { q: "What do we call soft white frozen flakes?", a: ["Snow", "Hail", "Sleet", "Dew"], c: 0 },
+    { q: "What is thick and makes it hard to see?", a: ["Fog", "Sunshine", "A rainbow", "A breeze"], c: 0 },
+    { q: "In which season do most flowers bloom?", a: ["Spring", "Winter", "Autumn", "Never"], c: 0 },
+    { q: "What do you wear when it's cold outside?", a: ["A coat", "Shorts", "A swimsuit", "Sandals"], c: 0 },
+    { q: "What do we call a long time with no rain?", a: ["A drought", "A flood", "A storm", "A rainbow"], c: 0 },
+    { q: "What appears in the sky on a clear day?", a: ["The Sun", "The Moon", "Stars", "Fireworks"], c: 0 },
+    { q: "What do plants need from the weather to grow?", a: ["Rain and sun", "Snow only", "Wind only", "Nothing"], c: 0 },
+    { q: "What color is the sky during a big storm?", a: ["Grey", "Bright yellow", "Pink", "Orange"], c: 0 },
+    { q: "What do you use to stay dry in the rain?", a: ["An umbrella", "A fan", "A towel", "A book"], c: 0 },
+    { q: "What tool tells the temperature?", a: ["A thermometer", "A clock", "A ruler", "A scale"], c: 0 }
   ];
   var QZ_COLORS = [
     { q: "What color is the sky on a sunny day?", a: ["Green", "Blue", "Red", "Brown"], c: 1 },
@@ -1361,7 +1536,21 @@ window.RoadTripGames = (function () {
     { q: "How many sides does a triangle have?", a: ["3", "4", "5", "6"], c: 0 },
     { q: "What color is grass?", a: ["Blue", "Green", "Pink", "Grey"], c: 1 },
     { q: "A shape that is perfectly round is a…", a: ["Square", "Circle", "Triangle", "Star"], c: 1 },
-    { q: "Mix blue and yellow to get…", a: ["Green", "Orange", "Red", "Pink"], c: 0 }
+    { q: "Mix blue and yellow to get…", a: ["Green", "Orange", "Red", "Pink"], c: 0 },
+    { q: "Mix red and blue to get…", a: ["Purple", "Green", "Orange", "Yellow"], c: 0 },
+    { q: "How many sides does a square have?", a: ["4", "3", "5", "6"], c: 0 },
+    { q: "How many corners does a triangle have?", a: ["3", "4", "5", "2"], c: 0 },
+    { q: "What shape is a ball?", a: ["A sphere", "A square", "A triangle", "A cube"], c: 0 },
+    { q: "What color are most bananas?", a: ["Yellow", "Blue", "Purple", "Grey"], c: 0 },
+    { q: "What color is snow?", a: ["White", "Black", "Green", "Red"], c: 0 },
+    { q: "Which shape has no corners?", a: ["A circle", "A square", "A triangle", "A star"], c: 0 },
+    { q: "What color is a stop sign?", a: ["Red", "Green", "Blue", "Yellow"], c: 0 },
+    { q: "How many points does a star usually have?", a: ["5", "3", "8", "10"], c: 0 },
+    { q: "What shape has four equal sides?", a: ["A square", "A circle", "A triangle", "A star"], c: 0 },
+    { q: "What color do you get mixing red and white?", a: ["Pink", "Blue", "Green", "Brown"], c: 0 },
+    { q: "What color is the grass?", a: ["Green", "Blue", "Pink", "Grey"], c: 0 },
+    { q: "What shape has three straight sides?", a: ["A triangle", "A circle", "A square", "A star"], c: 0 },
+    { q: "What color is a clear daytime sky?", a: ["Blue", "Green", "Red", "Brown"], c: 0 }
   ];
   var QZ_MUSIC = [
     { q: "How many strings does a guitar usually have?", a: ["4", "6", "8", "10"], c: 1 },
@@ -1369,7 +1558,21 @@ window.RoadTripGames = (function () {
     { q: "What do we call the words in a song?", a: ["Lyrics", "Pages", "Notes", "Titles"], c: 0 },
     { q: "A piano has black keys and…", a: ["Red keys", "White keys", "Blue keys", "No keys"], c: 1 },
     { q: "Which is a wind instrument?", a: ["Flute", "Drum", "Guitar", "Triangle"], c: 0 },
-    { q: "A big group that sings together is a…", a: ["Band", "Choir", "Team", "Crowd"], c: 1 }
+    { q: "A big group that sings together is a…", a: ["Band", "Choir", "Team", "Crowd"], c: 1 },
+    { q: "Which instrument do you blow into?", a: ["A flute", "A drum", "A guitar", "A piano"], c: 0 },
+    { q: "What do you press on a piano?", a: ["Keys", "Strings", "Pedals only", "Buttons"], c: 0 },
+    { q: "What keeps the beat in a band?", a: ["The drums", "The flute", "The singer", "The lights"], c: 0 },
+    { q: "What do we call a person who sings?", a: ["A singer", "A painter", "A driver", "A chef"], c: 0 },
+    { q: "How does a guitar make sound?", a: ["Strings vibrate", "You blow it", "You shake it", "You plug it in only"], c: 0 },
+    { q: "What do you shake to make a rhythm?", a: ["Maracas", "A flute", "A piano", "A harp"], c: 0 },
+    { q: "What do you wave to lead an orchestra?", a: ["A baton", "A drumstick", "A flag", "A spoon"], c: 0 },
+    { q: "Which instrument has 88 keys?", a: ["A piano", "A guitar", "A violin", "A flute"], c: 0 },
+    { q: "Music is written using…", a: ["Notes", "Letters", "Numbers", "Pictures"], c: 0 },
+    { q: "Which instrument do you hit with sticks?", a: ["Drums", "Flute", "Violin", "Trumpet"], c: 0 },
+    { q: "A violin belongs to which family?", a: ["String", "Drum", "Wind", "Electronic"], c: 0 },
+    { q: "What do you do to the beat at a concert?", a: ["Clap", "Sleep", "Cook", "Read"], c: 0 },
+    { q: "Which is a loud, booming instrument?", a: ["A drum", "A triangle", "A flute", "A harp"], c: 0 },
+    { q: "What do you call the tune you can't stop humming?", a: ["A catchy song", "A drum", "A note", "A page"], c: 0 }
   ];
   var QZ_WORLD = [
     { q: "The Eiffel Tower is in which country?", a: ["Italy", "France", "Spain", "Japan"], c: 1 },
@@ -1377,7 +1580,21 @@ window.RoadTripGames = (function () {
     { q: "The Great Pyramids are in…", a: ["Egypt", "Japan", "Brazil", "India"], c: 0 },
     { q: "Which is the biggest continent?", a: ["Asia", "Europe", "Australia", "Antarctica"], c: 0 },
     { q: "Pandas come from which country?", a: ["China", "Mexico", "France", "Kenya"], c: 0 },
-    { q: "The Statue of Liberty is in…", a: ["USA", "UK", "India", "Italy"], c: 0 }
+    { q: "The Statue of Liberty is in…", a: ["USA", "UK", "India", "Italy"], c: 0 },
+    { q: "Which country is shaped like a boot?", a: ["Italy", "France", "Spain", "Egypt"], c: 0 },
+    { q: "The Great Wall is in which country?", a: ["China", "Japan", "India", "Peru"], c: 0 },
+    { q: "Which country has a maple leaf on its flag?", a: ["Canada", "USA", "Mexico", "Brazil"], c: 0 },
+    { q: "Big Ben, the famous clock, is in…", a: ["London", "Paris", "Rome", "Tokyo"], c: 0 },
+    { q: "The Amazon rainforest is mostly in…", a: ["Brazil", "Canada", "Australia", "China"], c: 0 },
+    { q: "Which country is famous for sushi?", a: ["Japan", "Italy", "Mexico", "Egypt"], c: 0 },
+    { q: "Which ocean is between America and Europe?", a: ["The Atlantic", "The Pacific", "The Indian", "The Arctic"], c: 0 },
+    { q: "Which country is famous for pasta and pizza?", a: ["Italy", "Germany", "Sweden", "Kenya"], c: 0 },
+    { q: "The Sahara Desert is on which continent?", a: ["Africa", "Europe", "Asia", "Australia"], c: 0 },
+    { q: "Which is the largest country by land?", a: ["Russia", "France", "Egypt", "Italy"], c: 0 },
+    { q: "The imaginary line around Earth's middle is the…", a: ["Equator", "Border", "Road", "Wall"], c: 0 },
+    { q: "Which city has the Eiffel Tower?", a: ["Paris", "London", "Rome", "Berlin"], c: 0 },
+    { q: "In the wild, lions mostly live on which continent?", a: ["Africa", "Antarctica", "Europe", "North America"], c: 0 },
+    { q: "Which country is famous for the Taj Mahal?", a: ["India", "Japan", "Brazil", "Canada"], c: 0 }
   ];
   var QZ_SUPER = [
     { q: "Which hero climbs walls and shoots webs?", a: ["Batman", "Spider-Man", "Hulk", "Flash"], c: 1 },
@@ -1385,7 +1602,21 @@ window.RoadTripGames = (function () {
     { q: "Who is known as the 'Dark Knight'?", a: ["Superman", "Batman", "Flash", "Thor"], c: 1 },
     { q: "Superman is famous for being able to…", a: ["Swim fast", "Fly", "Turn invisible", "Grow tall"], c: 1 },
     { q: "The Flash is known for being…", a: ["Strong", "Super fast", "Invisible", "Tiny"], c: 1 },
-    { q: "A hero's hidden name is their…", a: ["Costume", "Secret identity", "Sidekick", "Gadget"], c: 1 }
+    { q: "A hero's hidden name is their…", a: ["Costume", "Secret identity", "Sidekick", "Gadget"], c: 1 },
+    { q: "What does Spider-Man shoot from his wrists?", a: ["Webs", "Water", "Fire", "Ice"], c: 0 },
+    { q: "Who has a hammer named Mjolnir?", a: ["Thor", "Hulk", "Flash", "Batman"], c: 0 },
+    { q: "What color is Superman's cape?", a: ["Red", "Green", "Purple", "Yellow"], c: 0 },
+    { q: "Which city does Batman protect?", a: ["Gotham City", "Metropolis", "Central City", "Atlantis"], c: 0 },
+    { q: "What is Wonder Woman's magic rope called?", a: ["The Lasso of Truth", "The Web", "The Chain", "The Whip"], c: 0 },
+    { q: "Which hero is very strong and turns green?", a: ["The Hulk", "Iron Man", "Flash", "Robin"], c: 0 },
+    { q: "What does Iron Man wear?", a: ["A metal suit", "A cape only", "A wizard hat", "Nothing special"], c: 0 },
+    { q: "Superheroes usually fight…", a: ["Villains", "Friends", "Teachers", "Pets"], c: 0 },
+    { q: "What is a hero's young helper called?", a: ["A sidekick", "A villain", "A boss", "A teacher"], c: 0 },
+    { q: "What does Captain America carry?", a: ["A shield", "A sword", "A wand", "A book"], c: 0 },
+    { q: "Where is Aquaman most powerful?", a: ["Underwater", "In space", "In a desert", "On a mountain"], c: 0 },
+    { q: "What helps Batman glide through the air?", a: ["His cape", "Wings", "A balloon", "A kite"], c: 0 },
+    { q: "Who is famous for being 'faster than a speeding bullet'?", a: ["Superman", "Batman", "Hulk", "Groot"], c: 0 },
+    { q: "What kind of powers do superheroes usually have?", a: ["Special powers", "No powers", "Only cooking", "Only singing"], c: 0 }
   ];
   var QZ_HOLIDAY = [
     { q: "Which holiday has jack-o'-lanterns?", a: ["Halloween", "Easter", "Christmas", "New Year"], c: 0 },
@@ -1393,7 +1624,21 @@ window.RoadTripGames = (function () {
     { q: "What do you hunt for at Easter?", a: ["Eggs", "Socks", "Shoes", "Books"], c: 0 },
     { q: "On birthdays we blow out…", a: ["Bubbles", "Candles", "Balloons", "Whistles"], c: 1 },
     { q: "On New Year's Eve we count down to…", a: ["Noon", "Midnight", "Sunrise", "Lunch"], c: 1 },
-    { q: "What lights up the sky on the Fourth of July?", a: ["Snow", "Fireworks", "Rainbows", "Kites"], c: 1 }
+    { q: "What lights up the sky on the Fourth of July?", a: ["Snow", "Fireworks", "Rainbows", "Kites"], c: 1 },
+    { q: "What do we decorate at Christmas?", a: ["A tree", "A car", "A shoe", "A spoon"], c: 0 },
+    { q: "What do we carve for Halloween?", a: ["A pumpkin", "An apple", "A potato", "A rock"], c: 0 },
+    { q: "What animal is linked with Easter?", a: ["A bunny", "A lion", "A shark", "A wolf"], c: 0 },
+    { q: "What do you wear on Halloween?", a: ["A costume", "A swimsuit", "A raincoat", "Just socks"], c: 0 },
+    { q: "What do we give people on their birthday?", a: ["Presents", "Homework", "Chores", "Bills"], c: 0 },
+    { q: "Which holiday celebrates love with hearts?", a: ["Valentine's Day", "Halloween", "Easter", "New Year"], c: 0 },
+    { q: "Who is Santa's most famous reindeer?", a: ["Rudolph", "Dasher", "Comet", "Blitzen"], c: 0 },
+    { q: "What two colors are linked with Christmas?", a: ["Red and green", "Black and grey", "Purple and orange", "Pink and brown"], c: 0 },
+    { q: "What do we light on a birthday cake?", a: ["Candles", "Torches", "Lamps", "Stars"], c: 0 },
+    { q: "What treat do kids collect on Halloween?", a: ["Candy", "Vegetables", "Books", "Socks"], c: 0 },
+    { q: "What do people watch at midnight on New Year's Eve?", a: ["Fireworks", "Cartoons", "The weather", "A quiz"], c: 0 },
+    { q: "What do you make when you blow out birthday candles?", a: ["A wish", "A sandwich", "A phone call", "A drawing"], c: 0 },
+    { q: "What day celebrates the year you were born, each year?", a: ["Your birthday", "New Year", "A weekend", "A day off"], c: 0 },
+    { q: "What do people hide for kids to find at Easter?", a: ["Eggs", "Shoes", "Books", "Spoons"], c: 0 }
   ];
 
   // --- Reveal / guess decks ---
