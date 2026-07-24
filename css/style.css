@@ -237,6 +237,13 @@ main { max-width: 620px; margin: 0 auto; padding: 18px 16px calc(28px + var(--sa
   background: linear-gradient(135deg, var(--brand), var(--brand-2));
   color: #fff; border-color: transparent;
 }
+/* Keep the "All" chip pinned on the left so it's always reachable. */
+.cat-chip-all {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  box-shadow: 8px 0 10px -6px var(--bg);
+}
 
 /* ---------------- Game spotlight (one at a time) ---------------- */
 .spotlight { display: flex; flex-direction: column; }

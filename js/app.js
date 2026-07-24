@@ -348,7 +348,9 @@
     options.forEach(function (opt) {
       var chip = document.createElement("button");
       chip.type = "button";
-      chip.className = "cat-chip" + (spotFilter === opt.key ? " cat-chip-on" : "");
+      chip.className = "cat-chip"
+        + (opt.key === null ? " cat-chip-all" : "")
+        + (spotFilter === opt.key ? " cat-chip-on" : "");
       chip.textContent = opt.label;
       chip.addEventListener("click", function () {
         spotFilter = opt.key;
