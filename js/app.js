@@ -120,7 +120,7 @@
   var tabStopped = document.getElementById("tabStopped");
   var drivingView = document.getElementById("drivingView");
   var stoppedView = document.getElementById("stoppedView");
-  var gamesGrid = document.getElementById("gamesGrid");
+  var gameSpotlight = document.getElementById("gameSpotlight");
   var activitiesList = document.getElementById("activitiesList");
   var rerollBtn = document.getElementById("rerollBtn");
   var celebrationEl = document.getElementById("celebration");
@@ -321,59 +321,70 @@
     renderPlayersCount();
   });
 
-  // ---- driving: game menu (grouped into sections) ------------------------
-  function makeGameCard(g) {
-    var card = document.createElement("button");
-    card.type = "button";
-    card.className = "game-card accent-" + g.accent;
+  // ---- driving: one game spotlight at a time -----------------------------
+  var allGames = window.RoadTripGames.list();
+  var spotOrder = shuffle(allGames);
+  var spotIdx = 0;
 
-    var badge = document.createElement("span");
-    badge.className = "game-badge";
-    badge.textContent = g.emoji;
+  function spotlightGame() { return spotOrder[spotIdx]; }
 
-    var info = document.createElement("span");
-    info.className = "game-info";
-    var title = document.createElement("span");
-    title.className = "game-title";
-    title.textContent = g.title;
-    var tag = document.createElement("span");
-    tag.className = "game-tagline";
-    tag.textContent = g.tagline;
-    info.appendChild(title);
-    info.appendChild(tag);
-
-    var play = document.createElement("span");
-    play.className = "game-play";
-    play.textContent = "▶";
-
-    card.appendChild(badge);
-    card.appendChild(info);
-    card.appendChild(play);
-    card.addEventListener("click", function () { openGame(g); });
-    return card;
+  function nextSpotlight() {
+    spotIdx += 1;
+    if (spotIdx >= spotOrder.length) { spotOrder = shuffle(allGames); spotIdx = 0; }
+    renderSpotlight();
   }
 
-  function renderGames() {
-    gamesGrid.innerHTML = "";
-    var games = window.RoadTripGames.list();
-    var order = [];
-    var groups = {};
-    games.forEach(function (g) {
-      var key = g.group || "Games";
-      if (!groups[key]) { groups[key] = []; order.push(key); }
-      groups[key].push(g);
-    });
-    order.forEach(function (key) {
-      var header = document.createElement("h2");
-      header.className = "group-header";
-      header.textContent = key;
-      var count = document.createElement("span");
-      count.className = "group-count";
-      count.textContent = groups[key].length;
-      header.appendChild(count);
-      gamesGrid.appendChild(header);
-      groups[key].forEach(function (g) { gamesGrid.appendChild(makeGameCard(g)); });
-    });
+  function renderSpotlight() {
+    var g = spotlightGame();
+    gameSpotlight.innerHTML = "";
+
+    var card = document.createElement("div");
+    card.className = "spotlight-card accent-" + g.accent;
+
+    if (g.group) {
+      var grp = document.createElement("span");
+      grp.className = "spotlight-group";
+      grp.textContent = g.group;
+      card.appendChild(grp);
+    }
+
+    var badge = document.createElement("div");
+    badge.className = "spotlight-badge";
+    badge.textContent = g.emoji;
+    card.appendChild(badge);
+
+    var title = document.createElement("h2");
+    title.className = "spotlight-title";
+    title.textContent = g.title;
+    card.appendChild(title);
+
+    var tag = document.createElement("p");
+    tag.className = "spotlight-tag";
+    tag.textContent = g.tagline;
+    card.appendChild(tag);
+
+    var play = document.createElement("button");
+    play.type = "button";
+    play.className = "spotlight-play";
+    play.textContent = "▶ Play this game";
+    play.addEventListener("click", function () { openGame(g); });
+    card.appendChild(play);
+
+    var next = document.createElement("button");
+    next.type = "button";
+    next.className = "spotlight-next";
+    next.textContent = "🔀 Show me another";
+    next.addEventListener("click", nextSpotlight);
+    card.appendChild(next);
+
+    var howto = document.createElement("button");
+    howto.type = "button";
+    howto.className = "spotlight-howto";
+    howto.textContent = "ℹ️ How to play";
+    howto.addEventListener("click", function () { openRules(g); });
+    card.appendChild(howto);
+
+    gameSpotlight.appendChild(card);
   }
 
   // ---- game overlay ------------------------------------------------------
@@ -413,10 +424,11 @@
 
   overlayBack.addEventListener("click", closeGame);
 
-  function openRules() {
-    if (!activeGame) return;
-    var r = activeGame.rules || {};
-    rulesTitle.textContent = activeGame.emoji + " " + activeGame.title;
+  function openRules(game) {
+    var g = game || activeGame;
+    if (!g) return;
+    var r = g.rules || {};
+    rulesTitle.textContent = g.emoji + " " + g.title;
     rulesHow.textContent = r.how || "Just tap around and have fun!";
     rulesPoints.textContent = r.points || "Play for fun — no points here.";
     rulesModal.hidden = false;
@@ -582,7 +594,7 @@
   // ---- init --------------------------------------------------------------
   renderStars();
   renderPlayersCount();
-  renderGames();
+  renderSpotlight();
   renderStopped();
   renderTabs();
 })();

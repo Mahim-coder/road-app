@@ -212,7 +212,69 @@ body.overlay-open { overflow: hidden; }
 main { max-width: 620px; margin: 0 auto; padding: 18px 16px calc(28px + var(--safe-bottom)); }
 .view-lead { color: var(--muted); font-size: 14px; margin: 0 0 14px; }
 
-/* ---------------- Games grid ---------------- */
+/* ---------------- Game spotlight (one at a time) ---------------- */
+.spotlight { display: flex; flex-direction: column; }
+.spotlight-card {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 26px 20px 22px;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+  animation: card-in 0.28s cubic-bezier(0.2, 1, 0.4, 1);
+}
+.spotlight-card::before {
+  content: "";
+  position: absolute; left: 0; right: 0; top: 0; height: 6px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+@keyframes card-in {
+  from { transform: translateY(14px) scale(0.98); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+.spotlight-group {
+  display: inline-block;
+  font-size: 11px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  padding: 5px 12px; border-radius: 999px;
+  margin-bottom: 16px;
+}
+.spotlight-badge {
+  display: flex; align-items: center; justify-content: center;
+  width: 96px; height: 96px; margin: 0 auto 16px;
+  font-size: 46px;
+  border-radius: 28px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 12px 26px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+.spotlight-title { font-size: 24px; font-weight: 800; margin: 0 0 6px; letter-spacing: -0.02em; }
+.spotlight-tag { font-size: 14.5px; color: var(--muted); margin: 0 0 22px; }
+.spotlight-play {
+  width: 100%; border: none; border-radius: 16px;
+  padding: 16px; font-size: 17px; font-weight: 800; color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  cursor: pointer;
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+.spotlight-play:active { transform: scale(0.99); }
+.spotlight-next {
+  width: 100%; margin-top: 10px;
+  border: 2px solid var(--border); background: var(--surface); color: var(--ink);
+  border-radius: 16px; padding: 14px; font-size: 15px; font-weight: 800;
+  cursor: pointer;
+}
+.spotlight-next:active { background: var(--surface-2); }
+.spotlight-howto {
+  margin-top: 12px; border: none; background: none;
+  color: var(--muted); font-size: 13px; font-weight: 700; cursor: pointer;
+}
+
+/* ---------------- Games grid (legacy) ---------------- */
 .games-grid { display: flex; flex-direction: column; gap: 12px; }
 
 .group-header {
