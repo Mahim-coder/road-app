@@ -2056,15 +2056,37 @@ window.RoadTripGames = (function () {
   // MUSIC GAMES (app plays melodies via the Web Audio API — no files needed)
   // =======================================================================
   var audioCtx = null;
+  var audioUnlocked = false;
+
   function getCtx() {
     if (!audioCtx) {
       var AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return null;
-      audioCtx = new AC();
+      try { audioCtx = new AC(); } catch (e) { return null; }
     }
-    if (audioCtx.state === "suspended") audioCtx.resume();
     return audioCtx;
   }
+
+  // iOS/Safari require a user gesture to start audio. Warm it up on the first
+  // tap anywhere by resuming the context and playing a 1-sample silent buffer.
+  function unlockAudio() {
+    var ctx = getCtx();
+    if (!ctx) return;
+    if (ctx.state === "suspended" && ctx.resume) ctx.resume();
+    if (!audioUnlocked) {
+      try {
+        var buf = ctx.createBuffer(1, 1, 22050);
+        var src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.connect(ctx.destination);
+        src.start(0);
+        audioUnlocked = true;
+      } catch (e) {}
+    }
+  }
+  ["touchend", "pointerdown", "mousedown", "keydown"].forEach(function (ev) {
+    document.addEventListener(ev, unlockAudio, { passive: true });
+  });
 
   var NOTE_FREQ = {
     C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.00,
@@ -2072,38 +2094,59 @@ window.RoadTripGames = (function () {
   };
 
   // Play a melody: seq is [[note, beats], ...]. Returns { stop }.
+  // Schedules notes only after the context is running (handles async resume).
   function playMelody(seq, opts) {
     opts = opts || {};
     var ctx = getCtx();
     if (!ctx) return { stop: function () {} };
-    var beat = 60 / (opts.bpm || 140);
-    var t = ctx.currentTime + 0.06;
-    var master = ctx.createGain();
-    master.gain.value = 0.22;
-    master.connect(ctx.destination);
+
     var oscs = [];
-    seq.forEach(function (n) {
-      var dur = n[1] * beat;
-      var freq = NOTE_FREQ[n[0]] || 0;
-      if (freq > 0) {
-        var osc = ctx.createOscillator();
-        osc.type = opts.wave || "triangle";
-        osc.frequency.value = freq;
-        var g = ctx.createGain();
-        g.gain.setValueAtTime(0, t);
-        g.gain.linearRampToValueAtTime(1, t + 0.02);
-        g.gain.setValueAtTime(1, t + dur * 0.75);
-        g.gain.linearRampToValueAtTime(0, t + dur * 0.97);
-        osc.connect(g); g.connect(master);
-        osc.start(t); osc.stop(t + dur);
-        oscs.push(osc);
-      }
-      t += dur;
-    });
+    var masterRef = { node: null };
+    var stopped = false;
+    var didSchedule = false;
+
+    function schedule() {
+      if (stopped || didSchedule) return;
+      didSchedule = true;
+      var beat = 60 / (opts.bpm || 140);
+      var t = ctx.currentTime + 0.08;
+      var master = ctx.createGain();
+      master.gain.value = 0.25;
+      master.connect(ctx.destination);
+      masterRef.node = master;
+      seq.forEach(function (n) {
+        var dur = n[1] * beat;
+        var freq = NOTE_FREQ[n[0]] || 0;
+        if (freq > 0) {
+          var osc = ctx.createOscillator();
+          osc.type = opts.wave || "triangle";
+          osc.frequency.value = freq;
+          var g = ctx.createGain();
+          g.gain.setValueAtTime(0.0001, t);
+          g.gain.linearRampToValueAtTime(1, t + 0.02);
+          g.gain.setValueAtTime(1, t + dur * 0.75);
+          g.gain.linearRampToValueAtTime(0.0001, t + dur * 0.97);
+          osc.connect(g); g.connect(master);
+          osc.start(t); osc.stop(t + dur);
+          oscs.push(osc);
+        }
+        t += dur;
+      });
+    }
+
+    if (ctx.state === "suspended" && ctx.resume) {
+      ctx.resume().then(schedule, schedule);
+      // Fallback in case resume() never resolves on some browsers.
+      setTimeout(function () { if (!masterRef.node && !stopped) schedule(); }, 250);
+    } else {
+      schedule();
+    }
+
     return {
       stop: function () {
+        stopped = true;
         oscs.forEach(function (o) { try { o.stop(); } catch (e) {} });
-        try { master.disconnect(); } catch (e) {}
+        if (masterRef.node) { try { masterRef.node.disconnect(); } catch (e) {} }
       }
     };
   }
@@ -2157,6 +2200,7 @@ window.RoadTripGames = (function () {
         current = playMelody(tune.notes, { bpm: tune.bpm });
       });
       wrap.appendChild(play);
+      wrap.appendChild(el("p", "game-lead", "🔈 No sound? Turn off your phone's silent/mute switch and turn the volume up."));
       var answer = el("div", "game-verdict good", "🎶 " + tune.name);
       answer.hidden = true;
       wrap.appendChild(answer);
