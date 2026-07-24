@@ -285,7 +285,7 @@ window.RoadTripGames = (function () {
   ];
 
   function quizGame(root, api) {
-    var questions = shuffle(QUIZ).slice(0, 20);
+    var questions = shuffle(QUIZ).slice(0, 10);
     var idx = 0;
     var score = 0;
     var timer = null;
@@ -362,7 +362,7 @@ window.RoadTripGames = (function () {
       var again = el("button", "game-cta", "Play again 🔁");
       again.type = "button";
       again.addEventListener("click", function () {
-        questions = shuffle(QUIZ).slice(0, 20);
+        questions = shuffle(QUIZ).slice(0, 10);
         idx = 0; score = 0;
         renderQuestion();
       });
@@ -1057,7 +1057,7 @@ window.RoadTripGames = (function () {
 
   // Multiple-choice quiz with a per-question timer + score.
   function quizEngine(bank, pickCount) {
-    var take = pickCount || 20;
+    var take = pickCount || 10;
     return function (root, api) {
       var questions = shuffle(bank).slice(0, Math.min(take, bank.length));
       var idx = 0, score = 0, timer = null;
