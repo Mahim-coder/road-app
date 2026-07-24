@@ -307,6 +307,35 @@ main { max-width: 620px; margin: 0 auto; padding: 18px 16px calc(28px + var(--sa
   color: var(--muted); font-size: 13px; font-weight: 700; cursor: pointer;
 }
 
+.browse-all-btn {
+  width: 100%;
+  margin-top: 14px;
+  border: 2px dashed var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  border-radius: 16px;
+  padding: 14px;
+  font-size: 14px; font-weight: 800;
+  cursor: pointer;
+}
+.browse-all-btn:active { background: var(--surface-2); }
+
+/* Full games list modal */
+.modal-card-full {
+  display: flex;
+  flex-direction: column;
+  max-height: 88vh;
+}
+.all-games-list {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+}
+
 /* ---------------- Games grid (legacy) ---------------- */
 .games-grid { display: flex; flex-direction: column; gap: 12px; }
 

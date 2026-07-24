@@ -122,6 +122,10 @@
   var stoppedView = document.getElementById("stoppedView");
   var gameSpotlight = document.getElementById("gameSpotlight");
   var categoryChips = document.getElementById("categoryChips");
+  var browseAllBtn = document.getElementById("browseAllBtn");
+  var allGamesModal = document.getElementById("allGamesModal");
+  var allGamesClose = document.getElementById("allGamesClose");
+  var allGamesList = document.getElementById("allGamesList");
   var activitiesList = document.getElementById("activitiesList");
   var rerollBtn = document.getElementById("rerollBtn");
   var celebrationEl = document.getElementById("celebration");
@@ -339,6 +343,75 @@
     if (spotIdx >= spotOrder.length) rebuildOrder();
     renderSpotlight();
   }
+
+  // ---- full browsable list of all games ----------------------------------
+  function buildListCard(g) {
+    var card = document.createElement("button");
+    card.type = "button";
+    card.className = "game-card accent-" + g.accent;
+    var badge = document.createElement("span");
+    badge.className = "game-badge";
+    badge.textContent = g.emoji;
+    var info = document.createElement("span");
+    info.className = "game-info";
+    var title = document.createElement("span");
+    title.className = "game-title";
+    title.textContent = g.title;
+    var tag = document.createElement("span");
+    tag.className = "game-tagline";
+    tag.textContent = g.tagline;
+    info.appendChild(title);
+    info.appendChild(tag);
+    var play = document.createElement("span");
+    play.className = "game-play";
+    play.textContent = "▶";
+    card.appendChild(badge);
+    card.appendChild(info);
+    card.appendChild(play);
+    card.addEventListener("click", function () {
+      closeAllGames();
+      openGame(g);
+    });
+    return card;
+  }
+
+  function renderAllGames() {
+    allGamesList.innerHTML = "";
+    var order = [];
+    var groups = {};
+    allGames.forEach(function (g) {
+      var key = g.group || "Games";
+      if (!groups[key]) { groups[key] = []; order.push(key); }
+      groups[key].push(g);
+    });
+    order.forEach(function (key) {
+      var header = document.createElement("h3");
+      header.className = "group-header";
+      header.textContent = key;
+      var count = document.createElement("span");
+      count.className = "group-count";
+      count.textContent = groups[key].length;
+      header.appendChild(count);
+      allGamesList.appendChild(header);
+      groups[key].forEach(function (g) { allGamesList.appendChild(buildListCard(g)); });
+    });
+  }
+
+  function openAllGames() {
+    renderAllGames();
+    allGamesModal.hidden = false;
+    document.body.classList.add("overlay-open");
+  }
+  function closeAllGames() {
+    allGamesModal.hidden = true;
+    if (overlay.hidden) document.body.classList.remove("overlay-open");
+  }
+
+  browseAllBtn.addEventListener("click", openAllGames);
+  allGamesClose.addEventListener("click", closeAllGames);
+  allGamesModal.addEventListener("click", function (e) {
+    if (e.target === allGamesModal) closeAllGames();
+  });
 
   function renderCategoryChips() {
     categoryChips.innerHTML = "";
